@@ -10,47 +10,43 @@ public class HeadBobbingUniversal : MonoBehaviour
     public float runBobbingSpeed = 18f;
     public float runBobbingAmount = 0.1f;
 
-    [Header("Impostazioni Crouch")]
-    public float crouchBobbingSpeed = 8f;
-    public float crouchBobbingAmount = 0.02f;
-
     [Header("Tasti")]
     public KeyCode runKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl;
 
     [Header("Riferimenti")]
-    public CharacterController controller;
+    public CharacterController controller; // Trascina qui Carlo dal pannello Hierarchy
 
+    private float defaultPosY = 0;
     private float timer = 0;
 
     void Start()
     {
+        defaultPosY = transform.localPosition.y;
+
+        // Tenta di trovare da solo il CharacterController nel padre se non assegnato
         if (controller == null)
             controller = GetComponentInParent<CharacterController>();
     }
 
     void Update()
     {
+        // 1. Verifichiamo se il giocatore è a terra
         bool isGrounded = (controller != null) ? controller.isGrounded : true;
 
+        // 2. Leggiamo l'input del movimento
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         bool isMoving = Mathf.Abs(horizontal) > 0.1f || Mathf.Abs(vertical) > 0.1f;
 
+        // 3. L'oscillazione si attiva SOLO SE il giocatore si muove ED È A TERRA
         if (isMoving && isGrounded)
         {
-            bool isCrouching = Input.GetKey(crouchKey);
-            bool isRunning = Input.GetKey(runKey) && !isCrouching;
+            bool isRunning = Input.GetKey(runKey);
+            float currentSpeed = isRunning ? runBobbingSpeed : walkBobbingAmount; // Velocità
+            float currentAmount = isRunning ? runBobbingAmount : walkBobbingAmount;
 
-            float currentSpeed = isCrouching ? crouchBobbingSpeed : (isRunning ? runBobbingSpeed : walkBobbingSpeed);
-            float currentAmount = isCrouching ? crouchBobbingAmount : (isRunning ? runBobbingAmount : walkBobbingAmount);
-
-            // COMPENSAZIONE SCALA: divide l'intensità per la scala Y del padre (0.65)
-            float parentScaleY = transform.lossyScale.y;
-            if (parentScaleY != 0) currentAmount /= parentScaleY;
-
-            timer += Time.deltaTime * currentSpeed;
-            float newY = transform.localPosition.y + Mathf.Sin(timer) * currentAmount;
+            timer += Time.deltaTime * (isRunning ? runBobbingSpeed : walkBobbingSpeed);
+            float newY = defaultPosY + Mathf.Sin(timer) * currentAmount;
 
             transform.localPosition = new Vector3(
                 transform.localPosition.x,
@@ -60,7 +56,19 @@ public class HeadBobbingUniversal : MonoBehaviour
         }
         else
         {
+            // Quando saltiamo o ci fermiamo, l'oscillazione si azzera e la camera torna fluida in posizione centrale
             timer = 0;
+            Vector3 targetPosition = new Vector3(
+                transform.localPosition.x,
+                defaultPosY,
+                transform.localPosition.z
+            );
+
+            transform.localPosition = Vector3.Lerp(
+                transform.localPosition,
+                targetPosition,
+                Time.deltaTime * 8f
+            );
         }
     }
 }

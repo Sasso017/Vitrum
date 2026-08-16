@@ -6,23 +6,14 @@ public class FPSController : MonoBehaviour
     public CharacterController controller;
     public Transform playerCamera;
 
-    [Header("Movimento & Velocità")]
+    [Header("Movimento")]
     public float walkSpeed = 6f;
     public float runSpeed = 12f;
-    public float crouchSpeed = 3f;           // Velocità da accovacciato
     public KeyCode runKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl; // Tasto accovacciati (CTRL)
-
-    [Header("Altezze Crouch")]
-    public float standingHeight = 2f;        // Altezza normale del CharacterController
-    public float crouchingHeight = 1f;       // Altezza accovacciato del CharacterController
-    public float standingCameraY = 0.8f;     // Altezza locale normale della camera
-    public float crouchingCameraY = 0.2f;    // Altezza locale accovacciato della camera
-    public float crouchTransitionSpeed = 10f;// Fluidità della transizione
 
     [Header("Salto & Gravità")]
-    public float jumpHeight = 1.5f;
-    public KeyCode jumpKey = KeyCode.Space;
+    public float jumpHeight = 1.5f;             // Altezza del salto in metri
+    public KeyCode jumpKey = KeyCode.Space;     // Tasto per saltare
     public float gravity = -9.81f;
     private Vector3 velocity;
 
@@ -32,18 +23,9 @@ public class FPSController : MonoBehaviour
     public float bottomClamp = -85f;
     private float xRotation = 0f;
 
-    // Stato corrente
-    private bool isCrouching = false;
-
     void Start()
     {
         LockCursor();
-
-        // Se non specificate, imposta le altezze di default basate sul controller
-        if (controller != null)
-        {
-            standingHeight = controller.height;
-        }
     }
 
     void Update()
@@ -54,7 +36,6 @@ public class FPSController : MonoBehaviour
         }
 
         LookAround();
-        HandleCrouch();
         MovePlayer();
     }
 
@@ -70,56 +51,37 @@ public class FPSController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
-    void HandleCrouch()
-    {
-        // Controlla se il giocatore tiene premuto il tasto Crouch (CTRL)
-        isCrouching = Input.GetKey(crouchKey);
-
-        // Calcola l'altezza bersaglio per il controller e per la camera
-        float targetHeight = isCrouching ? crouchingHeight : standingHeight;
-        float targetCameraY = isCrouching ? crouchingCameraY : standingCameraY;
-
-        // Modifica l'altezza del CharacterController in modo fluido
-        controller.height = Mathf.Lerp(controller.height, targetHeight, Time.deltaTime * crouchTransitionSpeed);
-
-        // Modifica la posizione Y della telecamera in modo fluido
-        Vector3 camPos = playerCamera.localPosition;
-        camPos.y = Mathf.Lerp(camPos.y, targetCameraY, Time.deltaTime * crouchTransitionSpeed);
-        playerCamera.localPosition = camPos;
-    }
-
     void MovePlayer()
     {
+        // Controlla se il personaggio tocca il suolo
         bool isGrounded = controller.isGrounded;
 
+        // Reset della velocità verticale se è a terra
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
 
+        // Input da tastiera (WASD)
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        // Calcola la velocità: se è accovacciato usa crouchSpeed, altrimenti controlla la corsa
-        float currentSpeed = walkSpeed;
-        if (isCrouching)
-        {
-            currentSpeed = crouchSpeed;
-        }
-        else if (Input.GetKey(runKey))
-        {
-            currentSpeed = runSpeed;
-        }
+        // Gestione corsa
+        bool isRunning = Input.GetKey(runKey);
+        float currentSpeed = isRunning ? runSpeed : walkSpeed;
 
+        // Calcolo direzione movimento
         Vector3 move = transform.right * horizontal + transform.forward * vertical;
         controller.Move(move.normalized * currentSpeed * Time.deltaTime);
 
-        // Permetti il salto solo se NON stai accovacciato ed è a terra
-        if (Input.GetKeyDown(jumpKey) && isGrounded && !isCrouching)
+        // --- GESTIONE SALTO ---
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
+            // Formula della fisica per raggiungere esattamente l'altezza desiderata
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
+        // Applica la gravità nel tempo
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
