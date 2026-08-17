@@ -9,6 +9,7 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Transform parentOriginale;
+    private Vector3 posizioneIniziale; // Salva la posizione di partenza
     private Canvas canvas;
 
     private void Awake()
@@ -19,26 +20,29 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         canvas = GetComponentInParent<Canvas>();
     }
 
+    private void Start()
+    {
+        // Salva il parent e la posizione iniziale esatta al caricamento della scena
+        parentOriginale = transform.parent;
+        posizioneIniziale = rectTransform.localPosition;
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (IsLocked) return;
 
-        parentOriginale = transform.parent;
-
-        // 1. Sposta la tessera direttamente come figlia del Canvas e in fondo alla Hierarchy
-        // Questo la porta in PRIMISSIMO piano visivo sopra a qualsiasi Slot o Panello
+        // Porta la tessera in cima al Canvas per visualizzarla sopra tutto durante il drag
         transform.SetParent(canvas.transform);
         transform.SetAsLastSibling();
 
         canvasGroup.blocksRaycasts = false;
-        // Zero patina: non tocchiamo l'alpha!
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (IsLocked) return;
 
-        // Movimento fluido che segue il mouse
+        // Movimento fluido del mouse
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
@@ -46,16 +50,15 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         canvasGroup.blocksRaycasts = true;
 
-        // Se la tessera è stata posizionata nello slot corretto (gestito da MosaicSlot)
+        // Se è stata incastrata nello slot corretto (gestito da MosaicSlot)
         if (IsLocked)
         {
-            // Rimane dentro lo slot e va davanti allo sfondo dello slot stesso
             transform.SetAsLastSibling();
             return;
         }
 
-        // Se il rilascio è errato, torna nel suo contenitore originale
+        // SE RILASCIATA A VUOTO: Torna nel genitore originale e alla SUA posizione iniziale esatta
         transform.SetParent(parentOriginale);
-        rectTransform.localPosition = Vector3.zero;
+        rectTransform.localPosition = posizioneIniziale;
     }
 }

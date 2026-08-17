@@ -1,94 +1,111 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FPSController : MonoBehaviour
 {
-    [Header("Componenti")]
-    public CharacterController controller;
-    public Transform playerCamera;
+    [Header("Impostazioni Movimento")]
+    public float walkSpeed = 5f;
+    public float runSpeed = 9f;
+    public float jumpHeight = 1.2f;
+    public float gravity = -19.62f;
 
-    [Header("Movimento")]
-    public float walkSpeed = 6f;
-    public float runSpeed = 12f;
-    public KeyCode runKey = KeyCode.LeftShift;
+    [Header("Impostazioni Visuale")]
+    public float mouseSensitivity = 100f;
+    public Transform cameraTransform; // Trascina la Main Camera qui nell'Inspector
 
-    [Header("Salto & Gravità")]
-    public float jumpHeight = 1.5f;             // Altezza del salto in metri
-    public KeyCode jumpKey = KeyCode.Space;     // Tasto per saltare
-    public float gravity = -9.81f;
-    private Vector3 velocity;
-
-    [Header("Mouse & Visuale")]
-    public float mouseSensitivity = 200f;
-    public float topClamp = 85f;
-    public float bottomClamp = -85f;
+    private CharacterController controller;
     private float xRotation = 0f;
+    private Vector3 velocity;
+    private bool isGrounded;
 
     void Start()
     {
-        LockCursor();
+        controller = GetComponent<CharacterController>();
+
+        if (cameraTransform == null && Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+
+        // Se siamo nel minigioco sblocca il mouse, altrimenti bloccalo per la prima persona
+        if (SceneManager.GetActiveScene().name == "ScenaMosaico")
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // -------------------------------------------------------------
+        // CHECKS PER LA SCENA MINIGIOCO (Non tocca il movimento 3D)
+        // -------------------------------------------------------------
+        if (SceneManager.GetActiveScene().name == "ScenaMosaico")
         {
-            LockCursor();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return; // Se siamo nel mosaico, non muovere il personaggio
         }
 
-        LookAround();
-        MovePlayer();
-    }
+        // Cliccando nella Basilica, ri-blocca il cursore se era sbloccato
+        if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
 
-    void LookAround()
-    {
+        // -------------------------------------------------------------
+        // MOVIMENTO E VISUALE FPS (Con Corsa e Salto)
+        // -------------------------------------------------------------
+
+        // --- ROTAZIONE MOUSE ---
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, bottomClamp, topClamp);
-        playerCamera.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
+        if (cameraTransform != null)
+        {
+            cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        }
         transform.Rotate(Vector3.up * mouseX);
-    }
 
-    void MovePlayer()
-    {
-        // Controlla se il personaggio tocca il suolo
-        bool isGrounded = controller.isGrounded;
-
-        // Reset della velocità verticale se è a terra
-        if (isGrounded && velocity.y < 0)
+        // --- CONTROLLO TERRENO E GRAVITÀ ---
+        if (controller != null && controller.enabled)
         {
-            velocity.y = -2f;
+            isGrounded = controller.isGrounded;
+
+            if (isGrounded && velocity.y < 0)
+            {
+                velocity.y = -2f;
+            }
+
+            // --- CORSA (Shift) ---
+            bool isRunning = Input.GetKey(KeyCode.LeftShift);
+            float currentSpeed = isRunning ? runSpeed : walkSpeed;
+
+            // --- INPUT MOVIMENTO (WASD) ---
+            float x = Input.GetAxis("Horizontal");
+            float z = Input.GetAxis("Vertical");
+
+            Vector3 move = transform.right * x + transform.forward * z;
+            controller.Move(move * currentSpeed * Time.deltaTime);
+
+            // --- SALTO (Spazio) ---
+            if (Input.GetButtonDown("Jump") && isGrounded)
+            {
+                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
+
+            // APPLICA GRAVITÀ
+            velocity.y += gravity * Time.deltaTime;
+            controller.Move(velocity * Time.deltaTime);
         }
-
-        // Input da tastiera (WASD)
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-        // Gestione corsa
-        bool isRunning = Input.GetKey(runKey);
-        float currentSpeed = isRunning ? runSpeed : walkSpeed;
-
-        // Calcolo direzione movimento
-        Vector3 move = transform.right * horizontal + transform.forward * vertical;
-        controller.Move(move.normalized * currentSpeed * Time.deltaTime);
-
-        // --- GESTIONE SALTO ---
-        if (Input.GetKeyDown(jumpKey) && isGrounded)
-        {
-            // Formula della fisica per raggiungere esattamente l'altezza desiderata
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        }
-
-        // Applica la gravità nel tempo
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-    }
-
-    void LockCursor()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 }

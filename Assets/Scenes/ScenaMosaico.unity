@@ -1199,7 +1199,7 @@ Transform:
   m_GameObject: {fileID: 960338982}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 777.709, y: 541.7891, z: 653.6799}
+  m_LocalPosition: {x: -445, y: 1237, z: 653.6799}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1227,7 +1227,7 @@ MonoBehaviour:
   - {fileID: 127635314}
   - {fileID: 1657194864}
   - {fileID: 391096768}
-  nomeScenaBasilica: ScenaMosaico
+  ScenaBasilica: ScenaBasilica
 --- !u!1 &977720007
 GameObject:
   m_ObjectHideFlags: 0
