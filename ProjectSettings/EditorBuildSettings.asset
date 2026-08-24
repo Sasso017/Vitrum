@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ScenaMosaico.unity
     guid: d1417d876887b79458a78e1e4caed56b
+  - enabled: 1
+    path: Assets/Scenes/ScenaGioco15.unity
+    guid: fff13e21bc02e584883a22849a59ac6a
   m_configObjects: {}

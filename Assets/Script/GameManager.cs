@@ -4,16 +4,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    // Stato del mosaico (salvato tra un cambio scena e l'altro)
+    // Stato dei minigiochi (salvati tra un cambio scena e l'altro)
     public bool isMosaicoCompletato = false;
+    public bool isGioco15Completato = false; // Nuovo flag per il Gioco del 15
 
-    // Posizione e rotazione del giocatore salvate prima di entrare nel minigioco
+    // Posizione e rotazione del giocatore salvate prima di entrare nei minigiochi
     public Vector3 ultimaPosizioneGiocatore;
     public Quaternion ultimaRotazioneGiocatore;
 
     private void Awake()
     {
-        // Garantisce che il GameManager sia unico e non venga distrutto al cambio scena
         if (instance == null)
         {
             instance = this;
