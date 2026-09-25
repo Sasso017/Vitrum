@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -74,6 +73,8 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
+        // Durante un cambio scena o una cutscene il menu di pausa non si apre né si chiude
+        if (SceneFader.InTransizione || IntroBasilica.InCorso) return;
         if (!PausePressed()) return;
 
         if (!IsPaused)
@@ -129,21 +130,18 @@ public class PauseMenu : MonoBehaviour
         if (pausePanel != null) pausePanel.SetActive(true);
     }
 
-    /// <summary>ESCI: esce dalla scena di gioco e torna al menu principale.</summary>
+    /// <summary>ESCI: esce dalla scena di gioco e torna al menu principale con dissolvenza.</summary>
     public void GoToMainMenu()
     {
-        // Ripristina il tempo PRIMA di cambiare scena, altrimenti il menu resta "congelato"
-        Time.timeScale = 1f;
-        IsPaused = false;
+        if (SceneFader.InTransizione) return;
+
+        // Cursore libero per il menu principale.
+        // Il gioco resta in pausa durante la dissolvenza: il SceneFader riporta
+        // Time.timeScale a 1 prima di caricare la nuova scena.
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (!Application.CanStreamedLevelBeLoaded(mainMenuScene))
-        {
-            Debug.LogError($"[PauseMenu] La scena '{mainMenuScene}' non esiste o non è nelle Build Settings.", this);
-            return;
-        }
-        SceneManager.LoadScene(mainMenuScene);
+        SceneFader.Instance.CaricaScena(mainMenuScene);
     }
 
     // ---------- Interni ----------

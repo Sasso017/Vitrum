@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// Quando il giocatore torna nella Basilica da un minigioco, lo riporta
+/// nella posizione in cui si trovava prima di entrarci.
+/// </summary>
 public class PlayerSceneRestore : MonoBehaviour
 {
     private void Start()
@@ -8,17 +12,15 @@ public class PlayerSceneRestore : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Se è presente una posizione salvata precedentemente, sposta qui il giocatore
-        if (GameManager.instance != null && GameManager.instance.ultimaPosizioneGiocatore != Vector3.zero)
-        {
-            // Disabilita temporaneamente il CharacterController per consentire il teletrasporto
-            CharacterController cc = GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false;
+        GameManager gm = GameManager.instance;
+        if (gm == null || !gm.PosizioneDaRipristinare()) return;
 
-            transform.position = GameManager.instance.ultimaPosizioneGiocatore;
-            transform.rotation = GameManager.instance.ultimaRotazioneGiocatore;
+        // Disabilita temporaneamente il CharacterController per consentire il teletrasporto
+        CharacterController cc = GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
 
-            if (cc != null) cc.enabled = true;
-        }
+        transform.SetPositionAndRotation(gm.ultimaPosizioneGiocatore, gm.ultimaRotazioneGiocatore);
+
+        if (cc != null) cc.enabled = true;
     }
 }
