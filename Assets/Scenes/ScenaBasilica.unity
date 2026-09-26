@@ -3713,6 +3713,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 710837772}
+  - component: {fileID: 710837773}
   m_Layer: 0
   m_Name: Porta
   m_TagString: Untagged
@@ -3737,6 +3738,27 @@ Transform:
   - {fileID: 969210232}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &710837773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710837771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08a7c779fb8316647be3d5b7ed2721ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  distanzaInterazione: 2
+  angoloVisuale: 50
+  puntoRiferimento: {fileID: 0}
+  tastoInteragisci: 101
+  testoChiaviMancanti: Hai bisogno di entrambe le chiavi per sbloccare la porta
+  testoSblocca: Premi E per sbloccare la porta
+  quandoSbloccata:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &712412034 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2ce05773924ac974c91989b55a339a41, type: 3}
