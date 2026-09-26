@@ -574,7 +574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c07ec4b0942a8c641911b68021e48e0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  music: {fileID: 8300000, guid: 4de9fa22c216bad489162006fac8129d, type: 3}
+  music: {fileID: 8300000, guid: 3b07573ded01a77478f7e43740d3fdea, type: 3}
   stopMusicInThisScene: 0
 --- !u!4 &1413594821
 Transform:
