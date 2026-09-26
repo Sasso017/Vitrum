@@ -3,13 +3,12 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Rappresenta la sequenza di fotogrammi (estratti da una GIF) di UNA slide.
 /// Invece di trascinare a mano ogni singolo sprite, si indica solo il percorso
 /// della cartella dentro Resources: i fotogrammi vengono caricati e ordinati
-/// automaticamente all'avvio.
+/// automaticamente.
 /// </summary>
 [Serializable]
 public class TextGifSequence
@@ -20,23 +19,25 @@ public class TextGifSequence
     [Tooltip("Quanti fotogrammi al secondo vengono mostrati (velocità dell'animazione)")]
     public float framesPerSecond = 12f;
 
-    // Popolato automaticamente all'avvio da CutsceneManager, non modificare a mano
+    // Popolato automaticamente da CutsceneManager, non modificare a mano
     [NonSerialized] public Sprite[] frames;
 }
 
 /// <summary>
 /// Gestisce una cutscene iniziale composta da una sequenza di immagini,
 /// ognuna accompagnata da una GIF di testo diversa, i cui fotogrammi vengono
-/// caricati automaticamente da cartelle Resources e riprodotti manualmente
+/// caricati da cartelle Resources e riprodotti manualmente
 /// (senza usare Animator/Animation di Unity).
 ///
 /// Flusso per ogni slide:
 /// 1. Fade-in del pannello (immagine visibile).
-/// 2. Parte la sequenza di fotogrammi della GIF di testo corrispondente alla slide.
-/// 3. Un click mentre la GIF sta ancora animandosi la completa istantaneamente
-///    (salta all'ultimo fotogramma).
+/// 2. Dopo un breve ritardo (saltabile con un click) parte la GIF di testo.
+/// 3. Un click mentre la GIF sta ancora animandosi la completa istantaneamente.
 /// 4. Un click a GIF terminata fa partire il fade-out e passa alla slide successiva.
-/// 5. Dopo l'ultima slide, viene caricata (se impostata) la scena successiva.
+/// 5. Dopo l'ultima slide, viene caricata (se impostata) la scena successiva con dissolvenza.
+///
+/// Per evitare blocchi all'avvio, all'inizio vengono caricati solo i fotogrammi della
+/// prima GIF: le altre si caricano in sottofondo, una per frame, durante la cutscene.
 /// </summary>
 public class CutsceneManager : MonoBehaviour
 {
@@ -64,15 +65,19 @@ public class CutsceneManager : MonoBehaviour
     [Tooltip("Durata in secondi del fade-in e del fade-out")]
     [SerializeField] private float fadeDuration = 1f;
 
-    [Tooltip("Tempo minimo (in secondi) dopo il fade-in prima che il click possa avere effetto, per evitare click accidentali troppo rapidi")]
+    [Tooltip("Tempo minimo (in secondi) dopo la comparsa del testo prima che il click possa avere effetto, per evitare click accidentali troppo rapidi")]
     [SerializeField] private float minTimeBeforeInput = 0.3f;
 
-    [Tooltip("Quanti secondi aspettare, dopo che l'immagine è comparsa, prima di far comparire la GIF di testo")]
-    [SerializeField] private float gifAppearDelay = 1f;
+    [Tooltip("Quanti secondi aspettare, dopo che l'immagine è comparsa, prima di far comparire la GIF di testo (un click salta l'attesa)")]
+    [SerializeField] private float gifAppearDelay = 0.5f;
 
     [Header("Cosa fare alla fine della cutscene")]
     [Tooltip("Nome della scena da caricare quando la cutscene finisce (lascia vuoto per non caricare nulla)")]
     [SerializeField] private string nextSceneName = "";
+
+    // Massimo deltaTime usato nelle dissolvenze: evita che un frame lento (es. dopo un caricamento)
+    // faccia saltare la dissolvenza tutta in una volta
+    private const float MaxDeltaFade = 1f / 30f;
 
     // Stato interno
     private int currentIndex = 0;
@@ -101,48 +106,16 @@ public class CutsceneManager : MonoBehaviour
         if (textGifSequences == null || textGifSequences.Length != cutsceneSprites.Length)
             Debug.LogError("[CutsceneManager] L'array textGifSequences deve avere la stessa lunghezza di cutsceneSprites!");
 
-        LoadAllGifFrames();
-    }
-
-    /// <summary>
-    /// Carica automaticamente, per ogni slide, tutti gli sprite presenti nella
-    /// cartella Resources indicata, ordinandoli per nome (quindi i file vanno
-    /// numerati con zeri iniziali, es. frame_001, frame_002, ... frame_095).
-    /// </summary>
-    private void LoadAllGifFrames()
-    {
-        if (textGifSequences == null)
-            return;
-
-        foreach (TextGifSequence sequence in textGifSequences)
-        {
-            if (string.IsNullOrEmpty(sequence.resourcesFolderPath))
-            {
-                Debug.LogWarning("[CutsceneManager] Una sequenza non ha un resourcesFolderPath impostato, verrà saltata.");
-                sequence.frames = new Sprite[0];
-                continue;
-            }
-
-            Sprite[] loaded = Resources.LoadAll<Sprite>(sequence.resourcesFolderPath);
-
-            if (loaded == null || loaded.Length == 0)
-            {
-                Debug.LogError($"[CutsceneManager] Nessuno sprite trovato in Resources/{sequence.resourcesFolderPath}. Controlla il percorso e che i file siano impostati come Sprite (2D and UI).");
-                sequence.frames = new Sprite[0];
-                continue;
-            }
-
-            // Ordina i fotogrammi per nome, cosi' l'ordine numerico e' rispettato
-            // (funziona correttamente solo se i nomi hanno zeri iniziali, es. 001, 002... 095)
-            sequence.frames = loaded.OrderBy(s => s.name).ToArray();
-
-            Debug.Log($"[CutsceneManager] Caricati {sequence.frames.Length} fotogrammi da Resources/{sequence.resourcesFolderPath}");
-        }
+        // All'avvio serve solo la prima GIF: le altre si caricano durante la cutscene
+        EnsureSequenceLoaded(0);
     }
 
     private void Start()
     {
         panelCanvasGroup.alpha = 0f;
+        textGifCanvasGroup.alpha = 0f;
+
+        StartCoroutine(LoadRemainingSequences());
         StartCoroutine(PlaySequence());
     }
 
@@ -164,6 +137,59 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
+    // ---------- Caricamento dei fotogrammi ----------
+
+    /// <summary>
+    /// Carica in sottofondo le GIF delle slide successive, una per frame,
+    /// così il gioco non si blocca.
+    /// </summary>
+    private IEnumerator LoadRemainingSequences()
+    {
+        if (textGifSequences == null) yield break;
+
+        for (int i = 1; i < textGifSequences.Length; i++)
+        {
+            yield return null; // Un frame di respiro tra un caricamento e l'altro
+            EnsureSequenceLoaded(i);
+        }
+    }
+
+    /// <summary>
+    /// Carica i fotogrammi della sequenza indicata, se non sono già stati caricati.
+    /// I fotogrammi vengono ordinati per nome (i file vanno numerati con zeri iniziali,
+    /// es. frame_001, frame_002, ... frame_095).
+    /// </summary>
+    private void EnsureSequenceLoaded(int index)
+    {
+        if (textGifSequences == null || index < 0 || index >= textGifSequences.Length)
+            return;
+
+        TextGifSequence sequence = textGifSequences[index];
+        if (sequence == null || sequence.frames != null)
+            return; // Già caricata (o sequenza mancante)
+
+        if (string.IsNullOrEmpty(sequence.resourcesFolderPath))
+        {
+            Debug.LogWarning($"[CutsceneManager] La sequenza {index} non ha un resourcesFolderPath impostato, verrà saltata.");
+            sequence.frames = new Sprite[0];
+            return;
+        }
+
+        Sprite[] loaded = Resources.LoadAll<Sprite>(sequence.resourcesFolderPath);
+
+        if (loaded == null || loaded.Length == 0)
+        {
+            Debug.LogError($"[CutsceneManager] Nessuno sprite trovato in Resources/{sequence.resourcesFolderPath}. Controlla il percorso e che i file siano impostati come Sprite (2D and UI).");
+            sequence.frames = new Sprite[0];
+            return;
+        }
+
+        sequence.frames = loaded.OrderBy(s => s.name).ToArray();
+        Debug.Log($"[CutsceneManager] Caricati {sequence.frames.Length} fotogrammi da Resources/{sequence.resourcesFolderPath}");
+    }
+
+    // ---------- Sequenza delle slide ----------
+
     /// <summary>
     /// Mostra la prima slide (fade-in + avvio della GIF di testo).
     /// </summary>
@@ -171,16 +197,10 @@ public class CutsceneManager : MonoBehaviour
     {
         isTransitioning = true;
 
-        ShowSlideContent(currentIndex);
-        yield return StartCoroutine(FadeCanvasGroup(0f, 1f, fadeDuration));
+        // Un frame di attesa: lascia terminare il caricamento della scena prima della dissolvenza
+        yield return null;
 
-        yield return new WaitForSeconds(gifAppearDelay);
-        textGifCanvasGroup.alpha = 1f;
-
-        yield return new WaitForSeconds(minTimeBeforeInput);
-        isTransitioning = false;
-
-        StartGifSequence(currentIndex);
+        yield return ShowSlide(currentIndex);
     }
 
     /// <summary>
@@ -197,16 +217,7 @@ public class CutsceneManager : MonoBehaviour
 
         if (currentIndex < cutsceneSprites.Length)
         {
-            ShowSlideContent(currentIndex);
-            yield return StartCoroutine(FadeCanvasGroup(0f, 1f, fadeDuration));
-
-            yield return new WaitForSeconds(gifAppearDelay);
-            textGifCanvasGroup.alpha = 1f;
-
-            yield return new WaitForSeconds(minTimeBeforeInput);
-            isTransitioning = false;
-
-            StartGifSequence(currentIndex);
+            yield return ShowSlide(currentIndex);
         }
         else
         {
@@ -215,11 +226,43 @@ public class CutsceneManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Fade-in della slide, breve attesa (saltabile con un click), poi avvio della GIF di testo.
+    /// </summary>
+    private IEnumerator ShowSlide(int index)
+    {
+        EnsureSequenceLoaded(index); // Nel caso il caricamento in sottofondo non sia ancora arrivato qui
+        ShowSlideContent(index);
+
+        yield return StartCoroutine(FadeCanvasGroup(0f, 1f, fadeDuration));
+
+        yield return WaitOrClick(gifAppearDelay);
+        textGifCanvasGroup.alpha = 1f;
+        StartGifSequence(index);
+
+        // Breve protezione contro i click accidentali, mentre la GIF è già partita
+        yield return new WaitForSeconds(minTimeBeforeInput);
+        isTransitioning = false;
+    }
+
+    /// <summary>
+    /// Aspetta il tempo indicato, ma si interrompe subito se il giocatore clicca.
+    /// </summary>
+    private IEnumerator WaitOrClick(float seconds)
+    {
+        float elapsed = 0f;
+        while (elapsed < seconds)
+        {
+            if (Input.GetMouseButtonDown(0)) yield break;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    /// <summary>
     /// Imposta la sprite corretta per l'indice specificato, e pre-carica il primo
-    /// fotogramma della GIF di testo corrispondente (ma la tiene invisibile,
-    /// alpha 0). Questo evita che rimanga visibile per un istante l'ultimo
-    /// fotogramma della GIF della slide precedente, e permette di far comparire
-    /// la nuova GIF con un piccolo ritardo controllato (vedi gifAppearDelay).
+    /// fotogramma della GIF di testo corrispondente (ma la tiene invisibile, alpha 0).
+    /// Questo evita che rimanga visibile per un istante l'ultimo fotogramma della
+    /// GIF della slide precedente.
     /// </summary>
     private void ShowSlideContent(int index)
     {
@@ -309,6 +352,7 @@ public class CutsceneManager : MonoBehaviour
 
     /// <summary>
     /// Anima il valore alpha del CanvasGroup da "from" a "to" nel tempo "duration".
+    /// Il deltaTime è limitato, così un frame lento non fa saltare la dissolvenza.
     /// </summary>
     private IEnumerator FadeCanvasGroup(float from, float to, float duration)
     {
@@ -317,7 +361,7 @@ public class CutsceneManager : MonoBehaviour
 
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Mathf.Min(Time.deltaTime, MaxDeltaFade);
             float t = Mathf.Clamp01(elapsed / duration);
             panelCanvasGroup.alpha = Mathf.Lerp(from, to, t);
             yield return null;
@@ -328,7 +372,7 @@ public class CutsceneManager : MonoBehaviour
 
     /// <summary>
     /// Chiamata quando tutte le slide sono state mostrate.
-    /// Carica la scena successiva, se specificata.
+    /// Carica la scena successiva con dissolvenza, se specificata.
     /// </summary>
     private void EndCutscene()
     {
@@ -336,7 +380,7 @@ public class CutsceneManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(nextSceneName))
         {
-            SceneManager.LoadScene(nextSceneName);
+            SceneFader.Instance.CaricaScena(nextSceneName);
         }
     }
 }

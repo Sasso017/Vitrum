@@ -3,11 +3,41 @@ guid: 9402e554b3cd41841b0d6faeca79bd8d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: AR3DMat PBR Black Basalt Slate
+    second: {fileID: 2100000, guid: 269a4b4aa723889448f07d8c6a320534, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Concrete
+    second: {fileID: 2100000, guid: ca5b24c8235f8ca4982e3f3d11e63ee6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Concrete floor or wall
+    second: {fileID: 2100000, guid: b186728919613b440ac2f58c56633f03, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Dark Green Wall
+    second: {fileID: 2100000, guid: a3e238806d6f8c54bb5e03258bb35fc9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Travertine marble
+    second: {fileID: 2100000, guid: a73e8cacfce178c469036ed7a53b9256, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood.001
+    second: {fileID: 2100000, guid: f666f813c365a8743ac4bf33767276e7, type: 2}
   materials:
     materialImportMode: 2
-    materialName: 0
-    materialSearch: 1
+    materialName: 1
+    materialSearch: 2
     materialLocation: 1
   animations:
     legacyGenerateAnimations: 4

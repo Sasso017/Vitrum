@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,6 +35,12 @@ public class SceneFader : MonoBehaviour
     [SerializeField] private float durataFadeIn = 0.6f;
     [SerializeField] private Color colore = Color.black;
 
+    [Header("Audio")]
+    [Tooltip("Nei cambi scena anche l'audio sfuma insieme all'immagine (non modifica gli slider del volume)")]
+    [SerializeField] private bool dissolvenzaAudio = true;
+    [Tooltip("Anche nelle dissolvenze senza cambio scena (es. entrata in un minigioco) l'audio si abbassa")]
+    [SerializeField] private bool audioAncheSenzaCambioScena = false;
+
     private CanvasGroup gruppo;
     private bool inTransizione = false;
 
@@ -69,13 +76,40 @@ public class SceneFader : MonoBehaviour
         StartCoroutine(Transizione(nomeScena));
     }
 
+    /// <summary>
+    /// Dissolvenza senza cambio scena: sfuma al nero, esegue l'azione (es. cambiare camera)
+    /// mentre lo schermo è nero, poi torna visibile.
+    /// </summary>
+    public void Dissolvenza(Action azioneAlBuio)
+    {
+        if (inTransizione) return;
+        StartCoroutine(TransizioneSenzaScena(azioneAlBuio));
+    }
+
+    private IEnumerator TransizioneSenzaScena(Action azioneAlBuio)
+    {
+        inTransizione = true;
+        gruppo.blocksRaycasts = true;
+
+        bool audio = dissolvenzaAudio && audioAncheSenzaCambioScena;
+        yield return Dissolvi(0f, 1f, durataFadeOut, audio);
+
+        azioneAlBuio?.Invoke();
+        yield return null; // Un frame per applicare i cambiamenti prima di mostrarli
+
+        yield return Dissolvi(1f, 0f, durataFadeIn, audio);
+
+        gruppo.blocksRaycasts = false;
+        inTransizione = false;
+    }
+
     private IEnumerator Transizione(string nomeScena)
     {
         inTransizione = true;
         gruppo.blocksRaycasts = true; // Blocca i click durante la transizione
 
-        // 1. Sfuma al nero
-        yield return Dissolvi(0f, 1f, durataFadeOut);
+        // 1. Sfuma al nero (e l'audio al silenzio)
+        yield return Dissolvi(0f, 1f, durataFadeOut, dissolvenzaAudio);
 
         // 2. Carica la nuova scena mentre lo schermo è nero
         Time.timeScale = 1f;
@@ -87,18 +121,19 @@ public class SceneFader : MonoBehaviour
         // (es. il ripristino della posizione del giocatore) prima di mostrarla
         yield return null;
 
-        // 3. Sfuma dal nero alla nuova scena
-        yield return Dissolvi(1f, 0f, durataFadeIn);
+        // 3. Sfuma dal nero alla nuova scena (e l'audio torna al suo volume)
+        yield return Dissolvi(1f, 0f, durataFadeIn, dissolvenzaAudio);
 
         gruppo.blocksRaycasts = false;
         inTransizione = false;
     }
 
-    private IEnumerator Dissolvi(float da, float a, float durata)
+    /// <param name="audio">Se true, il volume di ascolto segue l'immagine: 1 con schermo visibile, 0 con schermo nero</param>
+    private IEnumerator Dissolvi(float da, float a, float durata, bool audio = false)
     {
         if (durata <= 0f)
         {
-            gruppo.alpha = a;
+            ImpostaNero(a, audio);
             yield break;
         }
 
@@ -107,10 +142,29 @@ public class SceneFader : MonoBehaviour
         {
             // Tempo reale: funziona anche se il gioco era in pausa (timeScale = 0)
             t += Time.unscaledDeltaTime;
-            gruppo.alpha = Mathf.Lerp(da, a, t / durata);
+            ImpostaNero(Mathf.Lerp(da, a, t / durata), audio);
             yield return null;
         }
-        gruppo.alpha = a;
+        ImpostaNero(a, audio);
+    }
+
+    /// <summary>0 = scena visibile e audio pieno, 1 = schermo nero e silenzio.</summary>
+    private void ImpostaNero(float valore, bool audio)
+    {
+        gruppo.alpha = valore;
+
+        if (audio)
+        {
+            // Curva più morbida per l'orecchio: il volume scende più lentamente all'inizio
+            float v = 1f - Mathf.Clamp01(valore);
+            AudioListener.volume = v * v * (3f - 2f * v);
+        }
+    }
+
+    private void OnDisable()
+    {
+        // Sicurezza: il volume di ascolto non deve mai restare abbassato
+        AudioListener.volume = 1f;
     }
 
     /// <summary>Crea via codice il Canvas con l'immagine a tutto schermo.</summary>

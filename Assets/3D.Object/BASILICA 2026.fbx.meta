@@ -3,11 +3,161 @@ guid: 98d7b0c303b985444b88b9221089c2f5
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CAPRIATE3
+    second: {fileID: 2100000, guid: 019f0a7387d473c46b109ac66e92dded, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: CARPIATE2
+    second: {fileID: 2100000, guid: 46a70210a2eb63147b80fa570dd7bbdd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EXT_PAVI
+    second: {fileID: 2100000, guid: a8677ddeda9f1e149b5dc46059a90325, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PARAPETTO
+    second: {fileID: 2100000, guid: a7238361f6dfd3c4daa587617c0fab61, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: SCALE
+    second: {fileID: 2100000, guid: 474c242c7bfa69c4e9746424ad709f2a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TRAVI
+    second: {fileID: 2100000, guid: 593b34f0b92ce8e4bbc3c3294b85d8a8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: TRAVONI
+    second: {fileID: 2100000, guid: 4e7067510cf8c784f86481a4e8b78490, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: arcarecci1.001
+    second: {fileID: 2100000, guid: e639d6a11cc9a59409b7e71f2b7fc2f4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: arcarecci2
+    second: {fileID: 2100000, guid: 730bbba8862e37e42939151cd8912ede, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: arcarecci3s
+    second: {fileID: 2100000, guid: 1810082d420c8be4a8d383641bea5f9f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: arcarecci4
+    second: {fileID: 2100000, guid: 66087d5feaa67e24c9cee55051583795, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: aste
+    second: {fileID: 2100000, guid: 07d1e038497ba7a4d90830b2fa12553f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: base colonne
+    second: {fileID: 2100000, guid: 5c9d726ed0274224bb299c5b39022241, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: capitelli
+    second: {fileID: 2100000, guid: 4596e87b180e50849ab007242f3642b9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: capriate1.001
+    second: {fileID: 2100000, guid: 68a3608946c936947b2eef73644bfc2a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: ingresso_portali_intoanci2
+    second: {fileID: 2100000, guid: 071d2646a7f9bae4e866ff217f14cc04, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: intonaco colonne
+    second: {fileID: 2100000, guid: 0969bfd5b269cae4f8aa11d8965d7793, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: intonaco muro esterno
+    second: {fileID: 2100000, guid: 6e91a839c0ab05d4ea0705c6dfa1dfb8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: intonaco pareti interne
+    second: {fileID: 2100000, guid: c894dab50cf921a4ea15b0aef311f427, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: intonaco_paraste
+    second: {fileID: 2100000, guid: bb847b27e4cef864fb09d6af1e8c39f3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pavimentazione
+    second: {fileID: 2100000, guid: cd708a6fe6c7c6747ba63134ea3bd65b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pavimento logge
+    second: {fileID: 2100000, guid: ac085d1c4f18e794f9ffd30bcfc623de, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: pavimentoW
+    second: {fileID: 2100000, guid: f11ee9512e1a688419af6f0730abd041, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: seduteS
+    second: {fileID: 2100000, guid: 2d956d08bc2fd8a4d85667b8a9722503, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tavolato.001
+    second: {fileID: 2100000, guid: 3abf717a48f08874cbf7ba1ed07e6623, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tetti.001
+    second: {fileID: 2100000, guid: 2533c8fce7472f042b009b7a8cc6031f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: travi rif 2
+    second: {fileID: 2100000, guid: 2b21e74b61dc93a46b2e5a4780fa7973, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: travi rif2
+    second: {fileID: 2100000, guid: b7ce70b41b15b334696ce9d728cff5a0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: travi_solaio piano 1
+    second: {fileID: 2100000, guid: 89cca86eb6e474d43af176c1872aaba8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: travirif1
+    second: {fileID: 2100000, guid: 49896f5daf6aaa347b7c58022ca863a3, type: 2}
   materials:
     materialImportMode: 2
-    materialName: 0
-    materialSearch: 1
+    materialName: 1
+    materialSearch: 2
     materialLocation: 1
   animations:
     legacyGenerateAnimations: 4

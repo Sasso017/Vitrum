@@ -73,8 +73,8 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
-        // Durante un cambio scena o una cutscene il menu di pausa non si apre né si chiude
-        if (SceneFader.InTransizione || IntroBasilica.InCorso) return;
+        // Durante un cambio scena, una cutscene o un minigioco il menu di pausa non si apre né si chiude
+        if (SceneFader.InTransizione || IntroBasilica.InCorso || StazioneMinigioco.InUso) return;
         if (!PausePressed()) return;
 
         if (!IsPaused)

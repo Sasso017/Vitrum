@@ -22,6 +22,12 @@ public class PuntoEnigma : MonoBehaviour
     [SerializeField] private bool richiedePrerequisito = false;
     [SerializeField] private Enigma enigmaRichiesto = Enigma.Mosaico;
 
+    [Header("Tasselli del mosaico")]
+    [Tooltip("Se attivo, l'enigma si apre solo dopo aver raccolto tutti i tasselli nascosti nella Basilica")]
+    [SerializeField] private bool richiedeTuttiITasselli = false;
+    [Tooltip("{0} = tasselli mancanti, {1} = raccolti, {2} = totali")]
+    [SerializeField] private string testoTasselliMancanti = "Ti mancano ancora {0} tasselli del mosaico";
+
     [Header("Messaggi a schermo (opzionali)")]
     [Tooltip("Mostrato se il prerequisito non è soddisfatto (es. 'Prima devi completare il Mosaico')")]
     [SerializeField] private GameObject testoPrerequisito;
@@ -67,6 +73,16 @@ public class PuntoEnigma : MonoBehaviour
         if (richiedePrerequisito && gm != null && !gm.IsCompletato(enigmaRichiesto))
         {
             MostraMessaggio(testoPrerequisito);
+            return;
+        }
+
+        // Tasselli del mosaico non ancora tutti raccolti
+        if (richiedeTuttiITasselli && gm != null && !gm.HaTuttiITasselli)
+        {
+            int mancanti = gm.TasselliTotali - gm.NumeroTasselliRaccolti;
+            MessaggiSchermo.MostraMessaggio(
+                string.Format(testoTasselliMancanti, mancanti, gm.NumeroTasselliRaccolti, gm.TasselliTotali),
+                durataMessaggio);
             return;
         }
 
