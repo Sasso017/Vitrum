@@ -1515,6 +1515,10 @@ MonoBehaviour:
     descrizione: Interagisci
   - tasto: Esc
     descrizione: Menu Pausa
+  - tasto: C
+    descrizione: Accovacciati
+  mostraDopoCutscene: 1
+  mostraInPausa: 1
   ritardo: 0.3
   durataVisibile: 5
   durataDissolvenza: 0.4

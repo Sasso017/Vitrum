@@ -5,8 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Mostra per qualche secondo un riquadro con i comandi di gioco, subito dopo la fine
-/// della cutscene iniziale della porta (anche se saltata). Compare solo all'inizio della partita.
+/// Riquadro con i comandi di gioco, in alto a sinistra.
+/// Compare per qualche secondo alla fine della cutscene iniziale della porta (solo a inizio partita)
+/// e ogni volta che il giocatore apre il menu di pausa.
 /// Mettilo su un GameObject vuoto nella ScenaBasilica: l'interfaccia viene creata via codice.
 /// </summary>
 public class GuidaComandi : MonoBehaviour
@@ -22,7 +23,8 @@ public class GuidaComandi : MonoBehaviour
 
     [Header("Comandi")]
     [SerializeField] private string titolo = "Comandi";
-    [SerializeField] private Comando[] comandi =
+    [SerializeField]
+    private Comando[] comandi =
     {
         new Comando { tasto = "WASD",  descrizione = "Muoviti" },
         new Comando { tasto = "Mouse", descrizione = "Guardati intorno" },
@@ -32,10 +34,16 @@ public class GuidaComandi : MonoBehaviour
         new Comando { tasto = "Esc",   descrizione = "Pausa" }
     };
 
+    [Header("Quando mostrarla")]
+    [Tooltip("Mostra la guida per qualche secondo alla fine della cutscene iniziale (solo a inizio partita)")]
+    [SerializeField] private bool mostraDopoCutscene = true;
+    [Tooltip("Mostra la guida mentre il menu di pausa è aperto")]
+    [SerializeField] private bool mostraInPausa = true;
+
     [Header("Tempi (secondi)")]
     [Tooltip("Attesa tra la fine della cutscene e la comparsa della guida")]
     [SerializeField] private float ritardo = 0.3f;
-    [Tooltip("Per quanto resta visibile la guida")]
+    [Tooltip("Per quanto resta visibile la guida dopo la cutscene")]
     [SerializeField] private float durataVisibile = 2f;
     [SerializeField] private float durataDissolvenza = 0.4f;
 
@@ -51,22 +59,37 @@ public class GuidaComandi : MonoBehaviour
     [SerializeField] private Color coloreSfondo = new Color(0f, 0f, 0f, 0.6f);
     [SerializeField] private Color coloreTasto = new Color(1f, 1f, 1f, 0.15f);
 
-    /// <summary>True mentre la guida è a schermo (utile per spostare altri elementi dell'interfaccia).</summary>
+    /// <summary>True mentre la guida è a schermo (l'overlay dei progressi si nasconde per non sovrapporsi).</summary>
     public static bool Visibile { get; private set; }
 
     private CanvasGroup gruppo;
+    private bool mostraIniziale = false; // True durante la comparsa dopo la cutscene
 
     private void Start()
     {
-        // Solo all'inizio della partita: se la cutscene è già stata vista, la guida non compare
-        GameManager gm = GameManager.instance;
-        if (gm != null && gm.introBasilicaVista) return;
-
         CostruisciInterfaccia();
-        StartCoroutine(Sequenza());
+
+        // La comparsa dopo la cutscene avviene solo a inizio partita
+        GameManager gm = GameManager.instance;
+        bool cutsceneGiaVista = gm != null && gm.introBasilicaVista;
+        if (mostraDopoCutscene && !cutsceneGiaVista)
+            StartCoroutine(ComparsaIniziale());
     }
 
-    private IEnumerator Sequenza()
+    private void Update()
+    {
+        // Visibile durante la comparsa iniziale oppure mentre il gioco è in pausa
+        bool deveEssereVisibile = mostraIniziale || (mostraInPausa && PauseMenu.IsPaused);
+
+        float velocita = 1f / Mathf.Max(durataDissolvenza, 0.01f);
+        float obiettivo = deveEssereVisibile ? 1f : 0f;
+        // Tempo reale: in pausa il tempo di gioco è fermo
+        gruppo.alpha = Mathf.MoveTowards(gruppo.alpha, obiettivo, Time.unscaledDeltaTime * velocita);
+
+        Visibile = gruppo.alpha > 0.01f;
+    }
+
+    private IEnumerator ComparsaIniziale()
     {
         // Aspetta che la cutscene inizi (al massimo un paio di secondi, nel caso non ci sia)...
         float attesa = 0f;
@@ -78,27 +101,11 @@ public class GuidaComandi : MonoBehaviour
         // ...e poi che finisca
         while (IntroBasilica.InCorso) yield return null;
 
-        yield return new WaitForSeconds(ritardo);
+        yield return new WaitForSecondsRealtime(ritardo);
 
-        Visibile = true;
-        yield return Dissolvi(0f, 1f);
-        yield return new WaitForSeconds(durataVisibile);
-        yield return Dissolvi(1f, 0f);
-        Visibile = false;
-
-        Destroy(gruppo.gameObject); // Non serve più
-    }
-
-    private IEnumerator Dissolvi(float da, float a)
-    {
-        float t = 0f;
-        while (t < durataDissolvenza)
-        {
-            t += Time.unscaledDeltaTime;
-            gruppo.alpha = Mathf.Lerp(da, a, t / durataDissolvenza);
-            yield return null;
-        }
-        gruppo.alpha = a;
+        mostraIniziale = true;
+        yield return new WaitForSecondsRealtime(durataDissolvenza + durataVisibile);
+        mostraIniziale = false;
     }
 
     // ---------- Interfaccia ----------
@@ -110,7 +117,7 @@ public class GuidaComandi : MonoBehaviour
 
         Canvas canvas = canvasObj.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 420; // Sopra l'overlay dei progressi
+        canvas.sortingOrder = 420; // Sopra il menu di pausa e l'overlay dei progressi
 
         CanvasScaler scaler = canvasObj.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -119,7 +126,7 @@ public class GuidaComandi : MonoBehaviour
 
         gruppo = canvasObj.GetComponent<CanvasGroup>();
         gruppo.alpha = 0f;
-        gruppo.blocksRaycasts = false;
+        gruppo.blocksRaycasts = false; // Non blocca mai i click sui pulsanti del menu di pausa
         gruppo.interactable = false;
 
         // Pannello in alto a sinistra che si adatta al contenuto
