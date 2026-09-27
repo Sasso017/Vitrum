@@ -38,6 +38,20 @@ public class ChiaveRicompensa : MonoBehaviour
     [SerializeField] private float rotazioneSospesa = 120f;
     [SerializeField] private AudioClip suonoComparsa;
 
+    [Header("Cutscene di comparsa (opzionale, stile Super Mario 64)")]
+    [Tooltip("Camera fissa che inquadra la chiave mentre emerge (lasciala disattivata in scena). Se vuota, niente cutscene")]
+    [SerializeField] private Camera cameraCutscene;
+    [Tooltip("Script da disattivare durante la cutscene (es. FPSController di Carlo, Accovacciamento)")]
+    [SerializeField] private Behaviour[] controlliGiocatore;
+    [Tooltip("Passaggio tra le camere con una breve dissolvenza (se disattivo: taglio netto, come in Mario 64)")]
+    [SerializeField] private bool dissolvenzaTraCamere = false;
+    [Tooltip("La camera ruota per tenere la chiave al centro dell'inquadratura mentre sale")]
+    [SerializeField] private bool seguiLaChiave = true;
+    [Tooltip("Pausa sulla camera della cutscene prima che la chiave inizi a emergere")]
+    [SerializeField] private float attesaPrimaDellaComparsa = 0.5f;
+    [Tooltip("Quanto resta la camera sulla chiave sospesa prima di tornare al giocatore")]
+    [SerializeField] private float sostaDopoComparsa = 1.5f;
+
     [Header("Galleggiamento")]
     [Tooltip("Ampiezza dell'oscillazione su e giù (metri)")]
     [SerializeField] private float ampiezzaOndeggio = 0.03f;
@@ -64,7 +78,11 @@ public class ChiaveRicompensa : MonoBehaviour
     [SerializeField] private KeyCode tastoRaccogli = KeyCode.E;
 #endif
 
+    /// <summary>True mentre è in corso la cutscene di comparsa di una chiave.</summary>
+    public static bool CutsceneInCorso { get; private set; }
+
     private Stato stato = Stato.Nascosta;
+    private bool inCutscene = false;
     private Transform giocatore;
     private Vector3 posizioneBase;       // Posizione di partenza (sul tavolo)
     private Vector3 posizioneSospesa;    // Posizione a fine salita
@@ -91,6 +109,22 @@ public class ChiaveRicompensa : MonoBehaviour
         }
 
         if (luce != null) { luce.intensity = 0f; luce.enabled = false; }
+
+        if (cameraGiocatore == null) cameraGiocatore = Camera.main;
+        if (cameraCutscene != null) cameraCutscene.enabled = false;
+    }
+
+    private void LateUpdate()
+    {
+        // Durante la cutscene la camera tiene la chiave al centro dell'inquadratura
+        if (!inCutscene || !seguiLaChiave || cameraCutscene == null || modello == null) return;
+
+        Transform cam = cameraCutscene.transform;
+        Vector3 direzione = transform.position - cam.position;
+        if (direzione.sqrMagnitude < 0.0001f) return;
+
+        float k = 1f - Mathf.Exp(-4f * Time.deltaTime);
+        cam.rotation = Quaternion.Slerp(cam.rotation, Quaternion.LookRotation(direzione), k);
     }
 
     private void Update()
@@ -107,7 +141,8 @@ public class ChiaveRicompensa : MonoBehaviour
         transform.position = posizioneSospesa + Vector3.up * Mathf.Sin(tempoOndeggio) * ampiezzaOndeggio;
 
         // Raccolta
-        bool puoInteragire = !PauseMenu.IsPaused && !SceneFader.InTransizione && !StazioneMinigioco.InUso;
+        bool puoInteragire = !PauseMenu.IsPaused && !SceneFader.InTransizione && !StazioneMinigioco.InUso &&
+                             !CutsceneInCorso;
         bool vicino = puoInteragire && GiocatoreVicino();
 
         if (vicino) MessaggiSchermo.MostraSuggerimento(this, testoSuggerimento);
@@ -136,6 +171,13 @@ public class ChiaveRicompensa : MonoBehaviour
     {
         stato = Stato.Comparsa;
         yield return new WaitForSeconds(ritardoComparsa);
+
+        // Cutscene: la visuale passa alla camera fissa sulla chiave
+        if (cameraCutscene != null)
+        {
+            yield return CambiaCamera(true);
+            yield return new WaitForSeconds(attesaPrimaDellaComparsa);
+        }
 
         transform.position = posizioneBase;
         modello.localScale = Vector3.zero;
@@ -169,6 +211,13 @@ public class ChiaveRicompensa : MonoBehaviour
         velocitaRotazioneAttuale = rotazioneSospesa;
         tempoOndeggio = 0f;
         stato = Stato.Sospesa;
+
+        // Fine cutscene: un momento sulla chiave sospesa, poi si torna al giocatore
+        if (inCutscene)
+        {
+            yield return new WaitForSeconds(sostaDopoComparsa);
+            yield return CambiaCamera(false);
+        }
     }
 
     // ---------- Raccolta ----------
@@ -221,6 +270,61 @@ public class ChiaveRicompensa : MonoBehaviour
     private void OnDisable()
     {
         MessaggiSchermo.NascondiSuggerimento(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (inCutscene) CutsceneInCorso = false;
+    }
+
+    // ---------- Cutscene ----------
+
+    /// <summary>Passa alla camera della cutscene (true) o torna a quella del giocatore (false).</summary>
+    private IEnumerator CambiaCamera(bool versoCutscene)
+    {
+        if (versoCutscene)
+        {
+            CutsceneInCorso = true;
+            inCutscene = true;
+            SetControlli(false);
+            MessaggiSchermo.NascondiSuggerimento(this);
+        }
+
+        System.Action scambia = () =>
+        {
+            if (cameraGiocatore != null) cameraGiocatore.enabled = !versoCutscene;
+            cameraCutscene.enabled = versoCutscene;
+
+            // La camera parte già puntata sulla chiave
+            if (versoCutscene && seguiLaChiave)
+                cameraCutscene.transform.rotation = Quaternion.LookRotation(transform.position - cameraCutscene.transform.position);
+        };
+
+        if (dissolvenzaTraCamere)
+        {
+            while (SceneFader.InTransizione) yield return null;
+            SceneFader.Instance.Dissolvenza(scambia);
+            yield return null;
+            while (SceneFader.InTransizione) yield return null;
+        }
+        else
+        {
+            scambia();
+        }
+
+        if (!versoCutscene)
+        {
+            inCutscene = false;
+            SetControlli(true);
+            CutsceneInCorso = false;
+        }
+    }
+
+    private void SetControlli(bool attivi)
+    {
+        if (controlliGiocatore == null) return;
+        foreach (Behaviour b in controlliGiocatore)
+            if (b != null) b.enabled = attivi;
     }
 
     private bool GiocatoreVicino()

@@ -15,6 +15,12 @@ public class FiammaCandela : MonoBehaviour
     [SerializeField] private float altezzaExtra = 0.01f;
 
     [Header("Fiamma")]
+    [Tooltip("Crea la fiammella di particelle. Disattivalo se il modello ha già una sua fiamma (es. la lanterna)")]
+    [SerializeField] private bool creaFiammaParticelle = true;
+    [Tooltip("Fiamme già presenti nel modello (es. le immagini della fiamma nella lanterna): tremolano insieme alla luce")]
+    [SerializeField] private Transform[] fiammeEsistenti;
+    [Tooltip("Quanto pulsano le fiamme esistenti quando tremolano (0 = ferme)")]
+    [SerializeField, Range(0f, 0.5f)] private float tremolioFiammeEsistenti = 0.15f;
     [Tooltip("Materiale delle particelle (MatFiamma)")]
     [SerializeField] private Material materialeFiamma;
     [Tooltip("Altezza della fiammella in metri")]
@@ -41,6 +47,7 @@ public class FiammaCandela : MonoBehaviour
     private Transform fiamma;
     private Vector3 posizioneBaseLuce;
     private float seme;
+    private Vector3[] scaleFiammeEsistenti;
 
     private void Start()
     {
@@ -51,8 +58,15 @@ public class FiammaCandela : MonoBehaviour
         fiamma.position = CalcolaPosizioneFiamma();
         CompensaScala(fiamma);
 
-        CreaParticelle();
+        if (creaFiammaParticelle) CreaParticelle();
         CreaLuce();
+
+        if (fiammeEsistenti != null)
+        {
+            scaleFiammeEsistenti = new Vector3[fiammeEsistenti.Length];
+            for (int i = 0; i < fiammeEsistenti.Length; i++)
+                if (fiammeEsistenti[i] != null) scaleFiammeEsistenti[i] = fiammeEsistenti[i].localScale;
+        }
     }
 
     private void Update()
@@ -66,6 +80,19 @@ public class FiammaCandela : MonoBehaviour
         float rapido = Mathf.PerlinNoise(seme + 10f, t);
         float fattore = 1f - variazione + variazione * 2f * (lento * 0.6f + rapido * 0.4f);
         luce.intensity = intensita * fattore;
+
+        // Le fiamme del modello pulsano insieme alla luce
+        if (fiammeEsistenti != null && scaleFiammeEsistenti != null)
+        {
+            float variazioneFiamma = (fattore - 1f) / Mathf.Max(variazione, 0.01f); // circa da -1 a +1
+            for (int i = 0; i < fiammeEsistenti.Length; i++)
+            {
+                if (fiammeEsistenti[i] == null) continue;
+                // Scala uniforme: funziona qualunque sia l'orientamento del modello importato
+                float pulsazione = 1f + variazioneFiamma * tremolioFiammeEsistenti;
+                fiammeEsistenti[i].localScale = scaleFiammeEsistenti[i] * pulsazione;
+            }
+        }
 
         // La luce si sposta di pochissimo: le ombre "danzano" come con una vera fiamma
         Vector3 offset = new Vector3(

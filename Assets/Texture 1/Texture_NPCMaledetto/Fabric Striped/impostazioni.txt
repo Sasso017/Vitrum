@@ -1,0 +1,2 @@
+tilingx=0.29
+tilingy=1

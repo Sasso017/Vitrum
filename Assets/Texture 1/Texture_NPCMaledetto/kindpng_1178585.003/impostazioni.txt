@@ -1,0 +1,3 @@
+rendering=fade
+emissione=2
+doppiafaccia=1

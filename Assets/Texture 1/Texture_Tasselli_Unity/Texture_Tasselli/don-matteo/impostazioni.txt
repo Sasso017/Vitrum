@@ -1,0 +1,5 @@
+tiling=1
+metallic=0
+smoothness=0.25
+rendering=cutout
+doppiafaccia=1

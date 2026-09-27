@@ -13,6 +13,10 @@ public class HUDProgressi : MonoBehaviour
 {
     public enum Angolo { AltoSinistra, AltoDestra }
 
+    [Header("Comparsa")]
+    [Tooltip("Se attivo, l'overlay compare solo dopo la prima conversazione con l'NPC")]
+    [SerializeField] private bool mostraDopoDialogoNPC = true;
+
     [Header("Posizione")]
     [SerializeField] private Angolo angolo = Angolo.AltoSinistra;
     [SerializeField] private Vector2 margine = new Vector2(30f, 30f);
@@ -40,6 +44,8 @@ public class HUDProgressi : MonoBehaviour
     private RigaHUD rigaChiavi;
     private RigaHUD rigaTasselli;
     private GameManager gmIscritto;
+    private bool rivelato = false;       // L'overlay è già stato mostrato almeno una volta
+    private bool annunciaComparsa = false; // Alla prima comparsa le righe fanno un lampo
 
     private class RigaHUD
     {
@@ -55,6 +61,9 @@ public class HUDProgressi : MonoBehaviour
         CostruisciInterfaccia();
         Iscriviti();
         Aggiorna(false);
+
+        // Se l'obiettivo era già noto (es. scena ricaricata), niente lampo di presentazione
+        rivelato = ObiettivoNoto();
     }
 
     private void OnDestroy()
@@ -68,12 +77,45 @@ public class HUDProgressi : MonoBehaviour
 
     private void Update()
     {
-        // Nascosto durante la cutscene iniziale e mentre si gioca a un minigioco
-        bool visibile = !IntroBasilica.InCorso && !StazioneMinigioco.InUso;
+        // Nascosto durante la cutscene iniziale, i minigiochi, il finale e la guida dei comandi
+        bool obiettivoNoto = ObiettivoNoto();
+        bool visibile = obiettivoNoto && !IntroBasilica.InCorso && !StazioneMinigioco.InUso &&
+                        !FinaleBasilica.InCorso && !GuidaComandi.Visibile && !DialogoNPC.InCorso &&
+                        !ChiaveRicompensa.CutsceneInCorso;
+
+        // Prima comparsa dopo il dialogo con l'NPC: appena l'overlay è visibile, le righe lampeggiano
+        if (obiettivoNoto && !rivelato)
+        {
+            rivelato = true;
+            annunciaComparsa = true;
+        }
+        if (annunciaComparsa && gruppo.alpha > 0.95f)
+        {
+            annunciaComparsa = false;
+            LampoDiPresentazione();
+        }
         float obiettivo = visibile ? 1f : 0f;
         gruppo.alpha = Mathf.MoveTowards(gruppo.alpha, obiettivo, Time.unscaledDeltaTime * 4f);
 
         if (gmIscritto == null) Iscriviti(); // Nel caso il GameManager arrivi dopo
+    }
+
+    /// <summary>True se il giocatore conosce già l'obiettivo (o se la comparsa ritardata è disattivata).</summary>
+    private bool ObiettivoNoto()
+    {
+        if (!mostraDopoDialogoNPC) return true;
+        GameManager gm = GameManager.instance;
+        return gm == null || gm.obiettivoRivelato; // Senza GameManager (test) l'overlay resta visibile
+    }
+
+    private void LampoDiPresentazione()
+    {
+        foreach (RigaHUD r in new[] { rigaChiavi, rigaTasselli })
+        {
+            if (r == null || !r.oggetto.activeSelf) continue;
+            if (r.lampo != null) StopCoroutine(r.lampo);
+            r.lampo = StartCoroutine(Lampo(r, r.testo.color));
+        }
     }
 
     // ---------- Aggiornamento ----------

@@ -3,11 +3,16 @@ guid: 58f6a31ac9061b84f9d54cf327c77307
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Wood Veneer Walnut
+    second: {fileID: 2100000, guid: c54f3de15b1105f4f80dc9e25c6deb27, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
-    materialSearch: 1
+    materialSearch: 2
     materialLocation: 1
   animations:
     legacyGenerateAnimations: 4

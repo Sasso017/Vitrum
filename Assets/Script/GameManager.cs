@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
     [Header("Eventi della storia")]
     [Tooltip("True dopo che la cutscene di ingresso nella Basilica è stata vista")]
     public bool introBasilicaVista = false;
+    [Tooltip("True dopo la prima conversazione con l'NPC: da quel momento l'overlay con chiavi e tasselli è visibile")]
+    public bool obiettivoRivelato = false;
 
     [Header("Posizione del giocatore prima di entrare in un minigioco")]
     public Vector3 ultimaPosizioneGiocatore;
@@ -200,6 +202,7 @@ public class GameManager : MonoBehaviour
         isGioco15Completato = false;
 
         introBasilicaVista = false;
+        obiettivoRivelato = false;
         tasselliRaccolti.Clear();
         tasselliPosizionati.Clear();
 

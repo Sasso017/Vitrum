@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -7,9 +5,10 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// Un quadro del mosaico con i suoi posti vuoti (SlotMosaico nei figli).
-/// Avvicinandosi e premendo E, tutti i tasselli raccolti che appartengono a questo quadro
-/// vengono inseriti automaticamente al loro posto. I tasselli di altri quadri restano al giocatore.
-/// Mettilo sull'oggetto principale del quadro.
+/// Il mosaico si ricompone tutto insieme: quando il giocatore ha raccolto tutti i tasselli,
+/// avvicinandosi a uno qualsiasi dei quadri e premendo E vengono inseriti in entrambi i quadri
+/// (se ne occupa MosaicoBasilica). Prima di allora il quadro indica quanti tasselli mancano.
+/// Mettilo sull'oggetto principale del quadro (la base del dipinto).
 /// </summary>
 public class QuadroMosaico : MonoBehaviour
 {
@@ -20,25 +19,15 @@ public class QuadroMosaico : MonoBehaviour
     [SerializeField] private float distanzaInterazione = 2.5f;
     [Tooltip("Il giocatore deve guardare verso il quadro entro questo angolo (gradi)")]
     [SerializeField] private float angoloVisuale = 50f;
-    [Tooltip("{0} = numero di tasselli che verranno inseriti")]
-    [SerializeField] private string testoPosiziona = "Premi E per posizionare i tasselli ({0})";
-    [Tooltip("{0} = tasselli ancora mancanti in questo quadro")]
-    [SerializeField] private string testoMancanti = "Mancano {0} tasselli per completare questo quadro";
-    [SerializeField] private string testoCompletato = "Quadro completato!";
+    [SerializeField] private string testoRicomponi = "Premi E per ricomporre il mosaico";
+    [Tooltip("{0} = tasselli raccolti, {1} = tasselli totali")]
+    [SerializeField] private string testoMancanti = "Hai trovato {0} tasselli su {1}: trovali tutti per ricomporre il mosaico";
 #if !ENABLE_INPUT_SYSTEM
     [SerializeField] private KeyCode tastoInteragisci = KeyCode.E;
 #endif
 
-    [Header("Effetti")]
-    [Tooltip("Lo stesso prefab dell'effetto 'puf' dei lucchetti (opzionale)")]
-    [SerializeField] private ParticleSystem prefabPuf;
-    [SerializeField] private AudioClip suonoInserimento;
-    [SerializeField] private AudioClip suonoCompletato;
-    [Tooltip("Tempo tra l'inserimento di un tassello e il successivo")]
-    [SerializeField] private float intervalloInserimento = 0.35f;
-
-    /// <summary>Lanciato quando l'ultimo tassello del quadro viene inserito.</summary>
-    public event Action OnCompletato;
+    /// <summary>I posti del quadro (usati da MosaicoBasilica).</summary>
+    public SlotMosaico[] Slot => slot;
 
     /// <summary>True quando tutti i posti del quadro sono pieni.</summary>
     public bool Completo
@@ -52,7 +41,7 @@ public class QuadroMosaico : MonoBehaviour
 
     private Transform giocatore;
     private Camera cameraGiocatore;
-    private bool inserendo = false;
+    private MosaicoBasilica mosaico;
 
     private void Awake()
     {
@@ -66,6 +55,10 @@ public class QuadroMosaico : MonoBehaviour
         if (playerObj != null) giocatore = playerObj.transform;
         cameraGiocatore = Camera.main;
 
+        mosaico = FindObjectOfType<MosaicoBasilica>();
+        if (mosaico == null)
+            Debug.LogWarning("[QuadroMosaico] Nessun MosaicoBasilica nella scena: il mosaico non potrà essere ricomposto.", this);
+
         // Ripristina i tasselli già inseriti in precedenza
         GameManager gm = GameManager.instance;
         foreach (SlotMosaico s in slot)
@@ -74,14 +67,9 @@ public class QuadroMosaico : MonoBehaviour
 
     private void Update()
     {
-        if (inserendo || Completo)
-        {
-            MessaggiSchermo.NascondiSuggerimento(this);
-            return;
-        }
-
-        bool puoInteragire = !PauseMenu.IsPaused && !SceneFader.InTransizione &&
-                             !StazioneMinigioco.InUso && !IntroBasilica.InCorso;
+        bool puoInteragire = mosaico != null && !mosaico.Completato && !mosaico.InCorso &&
+                             !PauseMenu.IsPaused && !SceneFader.InTransizione &&
+                             !StazioneMinigioco.InUso && !IntroBasilica.InCorso && !DialogoNPC.InCorso;
 
         if (!puoInteragire || !GiocatoreVicino())
         {
@@ -89,60 +77,20 @@ public class QuadroMosaico : MonoBehaviour
             return;
         }
 
-        int inseribili = ContaInseribili();
-        if (inseribili > 0)
+        if (mosaico.TuttiITasselliRaccolti())
         {
-            MessaggiSchermo.MostraSuggerimento(this, string.Format(testoPosiziona, inseribili));
-            if (InteragisciPremuto()) StartCoroutine(InserisciTasselli());
+            MessaggiSchermo.MostraSuggerimento(this, testoRicomponi);
+            if (InteragisciPremuto())
+            {
+                MessaggiSchermo.NascondiSuggerimento(this);
+                mosaico.Ricomponi();
+            }
         }
         else
         {
-            MessaggiSchermo.MostraSuggerimento(this, string.Format(testoMancanti, ContaMancanti()));
+            MessaggiSchermo.MostraSuggerimento(this,
+                string.Format(testoMancanti, mosaico.TasselliRaccolti(), mosaico.TasselliTotali()));
         }
-    }
-
-    /// <summary>Tasselli raccolti dal giocatore che vanno in questo quadro e non sono ancora inseriti.</summary>
-    private int ContaInseribili()
-    {
-        GameManager gm = GameManager.instance;
-        if (gm == null) return 0;
-
-        int n = 0;
-        foreach (SlotMosaico s in slot)
-            if (!s.Pieno && gm.IsTasselloRaccolto(s.IdTassello)) n++;
-        return n;
-    }
-
-    private int ContaMancanti()
-    {
-        int n = 0;
-        foreach (SlotMosaico s in slot) if (!s.Pieno) n++;
-        return n;
-    }
-
-    private IEnumerator InserisciTasselli()
-    {
-        inserendo = true;
-        MessaggiSchermo.NascondiSuggerimento(this);
-        GameManager gm = GameManager.instance;
-
-        foreach (SlotMosaico s in slot)
-        {
-            if (s.Pieno || !gm.IsTasselloRaccolto(s.IdTassello)) continue;
-
-            gm.PosizionaTassello(s.IdTassello);
-            yield return s.Posiziona(prefabPuf, suonoInserimento);
-            yield return new WaitForSeconds(intervalloInserimento);
-        }
-
-        if (Completo)
-        {
-            if (suonoCompletato != null && SFXPlayer.Instance != null) SFXPlayer.Instance.Play(suonoCompletato);
-            MessaggiSchermo.MostraMessaggio(testoCompletato, 2.5f);
-            OnCompletato?.Invoke();
-        }
-
-        inserendo = false;
     }
 
     private bool GiocatoreVicino()
