@@ -16173,8 +16173,8 @@ MonoBehaviour:
   coloreTitolo: {r: 0.25, g: 0.15, b: 0.08, a: 1}
   coloreSottotitolo: {r: 0.35, g: 0.25, b: 0.15, a: 1}
   font: {fileID: 0}
-  inizioDissolvenza: 1.8
-  durataDissolvenza: 2.5
+  inizioDissolvenza: 0.8
+  durataDissolvenza: 1.1
   attesaPrimaDiContinuare: 3
   musicaVittoria: {fileID: 8300000, guid: b11027dfda9e7cb47bca7f8b06fa427a, type: 3}
   scenaMenuPrincipale: StartMenu
@@ -18410,8 +18410,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7aefc7e245dd944abd1e2f398c48a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMosaicoCompletato: 0
-  isGioco15Completato: 0
+  isMosaicoCompletato: 1
+  isGioco15Completato: 1
   tasselliTotali: 0
   tasselliRaccolti: []
   tasselliPosizionati: []

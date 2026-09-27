@@ -19,7 +19,11 @@ public class TextGifSequence
     [Tooltip("Quanti fotogrammi al secondo vengono mostrati (velocità dell'animazione)")]
     public float framesPerSecond = 12f;
 
-    // Popolato automaticamente da CutsceneManager, non modificare a mano
+    // Fotogrammi collegati in anticipo nell'Editor (menu ⋮ del componente → "Precarica fotogrammi"):
+    // vengono caricati insieme alla scena, senza bloccare il gioco all'avvio della cutscene
+    [HideInInspector] public Sprite[] fotogrammiPrecaricati;
+
+    // Fotogrammi usati durante il gioco, non modificare a mano
     [NonSerialized] public Sprite[] frames;
 }
 
@@ -167,6 +171,17 @@ public class CutsceneManager : MonoBehaviour
         TextGifSequence sequence = textGifSequences[index];
         if (sequence == null || sequence.frames != null)
             return; // Già caricata (o sequenza mancante)
+
+        // Fotogrammi già collegati nell'Editor: nessun caricamento durante il gioco
+        if (sequence.fotogrammiPrecaricati != null && sequence.fotogrammiPrecaricati.Length > 0)
+        {
+            sequence.frames = sequence.fotogrammiPrecaricati;
+            return;
+        }
+
+        // Altrimenti caricamento da Resources (più lento: blocca il gioco per un momento)
+        Debug.LogWarning($"[CutsceneManager] La sequenza {index} non è precaricata: usa il menu del componente → " +
+                         "'Precarica fotogrammi' per evitare il blocco all'avvio della cutscene.", this);
 
         if (string.IsNullOrEmpty(sequence.resourcesFolderPath))
         {
@@ -383,4 +398,53 @@ public class CutsceneManager : MonoBehaviour
             SceneFader.Instance.CaricaScena(nextSceneName);
         }
     }
+
+#if UNITY_EDITOR
+    // ---------- Strumenti dell'Editor ----------
+
+    /// <summary>
+    /// Collega in anticipo alla scena tutti i fotogrammi delle GIF, leggendoli dalle cartelle Resources.
+    /// Va rifatto solo se si aggiungono o modificano i fotogrammi.
+    /// </summary>
+    [ContextMenu("Precarica fotogrammi")]
+    private void PrecaricaFotogrammi()
+    {
+        if (textGifSequences == null) return;
+
+        UnityEditor.Undo.RecordObject(this, "Precarica fotogrammi");
+        var riepilogo = new System.Text.StringBuilder();
+
+        for (int i = 0; i < textGifSequences.Length; i++)
+        {
+            TextGifSequence seq = textGifSequences[i];
+            if (seq == null) continue;
+
+            if (string.IsNullOrEmpty(seq.resourcesFolderPath))
+            {
+                riepilogo.AppendLine($"Sequenza {i}: nessuna cartella indicata");
+                continue;
+            }
+
+            Sprite[] caricati = Resources.LoadAll<Sprite>(seq.resourcesFolderPath);
+            seq.fotogrammiPrecaricati = caricati.OrderBy(sp => sp.name).ToArray();
+            riepilogo.AppendLine($"Sequenza {i}: {seq.fotogrammiPrecaricati.Length} fotogrammi ({seq.resourcesFolderPath})");
+        }
+
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+        UnityEditor.EditorUtility.DisplayDialog("Precarica fotogrammi",
+            riepilogo + "\nRicordati di salvare la scena (Ctrl+S).", "OK");
+    }
+
+    [ContextMenu("Svuota fotogrammi precaricati")]
+    private void SvuotaFotogrammi()
+    {
+        if (textGifSequences == null) return;
+        UnityEditor.Undo.RecordObject(this, "Svuota fotogrammi");
+        foreach (TextGifSequence seq in textGifSequences)
+            if (seq != null) seq.fotogrammiPrecaricati = null;
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+    }
+#endif
 }
