@@ -26,6 +26,8 @@ using UnityEngine.Rendering;
 ///     emissione=2            il materiale emette luce (usa l'albedo come colore della luce)
 ///     doppiafaccia=1         visibile da entrambi i lati (solo con rendering=cutout,
 ///                            usa lo shader "Basilica/Tessuto Doppia Faccia")
+///     triplanare=0.65        proietta la texture senza usare le UV (shader "Basilica/Triplanare"),
+///                            il valore indica quante volte si ripete per metro
 ///
 /// Uso: tasto destro sulla cartella nella finestra Project → "Crea materiali da questa cartella".
 /// I materiali vengono salvati in "Materiali_NomeCartella" accanto a quella delle texture.
@@ -41,6 +43,7 @@ public static class CreaMaterialiDaCartella
         public string rendering = "opaque";
         public float emissione = 0f;
         public bool doppiaFaccia = false;
+        public float triplanare = 0f;
     }
 
     [MenuItem("Assets/Crea materiali da questa cartella", true)]
@@ -63,6 +66,7 @@ public static class CreaMaterialiDaCartella
 
         Shader standard = Shader.Find("Standard");
         Shader doppiaFaccia = Shader.Find("Basilica/Tessuto Doppia Faccia");
+        Shader triplanare = Shader.Find("Basilica/Triplanare");
         string[] sottocartelle = AssetDatabase.GetSubFolders(cartellaTexture);
         int creati = 0;
         var avvisi = new List<string>();
@@ -108,7 +112,15 @@ public static class CreaMaterialiDaCartella
                     avvisi.Add($"{nomeMateriale}: shader 'Basilica/Tessuto Doppia Faccia' non trovato, uso Standard (visibile da un solo lato)");
                     usaDoppiaFaccia = false;
                 }
-                Shader shader = usaDoppiaFaccia ? doppiaFaccia : standard;
+                // Shader triplanare per le texture proiettate senza UV
+                bool usaTriplanare = imp.triplanare > 0f;
+                if (usaTriplanare && triplanare == null)
+                {
+                    avvisi.Add($"{nomeMateriale}: shader 'Basilica/Triplanare' non trovato, uso Standard (la texture userà le UV)");
+                    usaTriplanare = false;
+                }
+
+                Shader shader = usaTriplanare ? triplanare : (usaDoppiaFaccia ? doppiaFaccia : standard);
 
                 string percorsoMateriale = $"{cartellaMateriali}/{nomeMateriale}.mat";
                 Material mat = AssetDatabase.LoadAssetAtPath<Material>(percorsoMateriale);
@@ -120,7 +132,9 @@ public static class CreaMaterialiDaCartella
                 mat.SetTexture("_MainTex", albedo);
                 mat.SetTextureScale("_MainTex", imp.tiling);
 
-                if (usaDoppiaFaccia)
+                if (usaTriplanare)
+                    ConfiguraTriplanare(mat, imp);
+                else if (usaDoppiaFaccia)
                     ConfiguraDoppiaFaccia(mat, metallic, normal, imp);
                 else
                     ConfiguraStandard(mat, albedo, metallic, normal, imp);
@@ -258,6 +272,16 @@ public static class CreaMaterialiDaCartella
         mat.SetFloat("_BumpScale", 1f);
     }
 
+    // ---------- Materiale triplanare ----------
+
+    private static void ConfiguraTriplanare(Material mat, Impostazioni imp)
+    {
+        mat.SetTextureScale("_MainTex", Vector2.one); // La ripetizione la gestisce _Scala
+        mat.SetFloat("_Scala", imp.triplanare);
+        mat.SetFloat("_Metallic", imp.metallic);
+        mat.SetFloat("_Glossiness", imp.smoothness);
+    }
+
     // ---------- Utilità ----------
 
     private static Impostazioni LeggiImpostazioni(string cartella)
@@ -288,6 +312,7 @@ public static class CreaMaterialiDaCartella
                 case "smoothness": imp.smoothness = valore; break;
                 case "emissione": imp.emissione = valore; break;
                 case "doppiafaccia": imp.doppiaFaccia = valore > 0.5f; break;
+                case "triplanare": imp.triplanare = valore; break;
             }
         }
         return imp;

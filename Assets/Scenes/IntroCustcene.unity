@@ -680,6 +680,8 @@ MonoBehaviour:
   fadeDuration: 1
   minTimeBeforeInput: 0.3
   gifAppearDelay: 1
+  rimuoviAttesaIniziale: 1
+  pausaInizialeMassima: 0.5
   nextSceneName: ScenaBasilica
 --- !u!4 &891821129
 Transform:

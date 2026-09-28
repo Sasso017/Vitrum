@@ -774,14 +774,42 @@ MonoBehaviour:
   modello: {fileID: 87330116}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &87330118
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 87330115}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.004000003, y: 0.005000002, z: 0.0000000018328428}
+  m_Center: {x: 0.000000015017577, y: -0.000000009313226, z: -0.000000014901161}
 --- !u!1 &91679714 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2ce05773924ac974c91989b55a339a41, type: 3}
@@ -846,14 +874,42 @@ MonoBehaviour:
   modello: {fileID: 92024935}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &92024937
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92024934}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0040000034, y: 0.0050000013, z: 0.0000000015646219}
+  m_Center: {x: 0.000000020489097, y: -0.000000031664968, z: -0.00000009313226}
 --- !u!1 &93467834
 GameObject:
   m_ObjectHideFlags: 0
@@ -1123,8 +1179,37 @@ PrefabInstance:
     - {fileID: 65702495048144492, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     - {fileID: -8700617353114198275, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 102082352}
   m_SourcePrefab: {fileID: 100100000, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+--- !u!1 &102082351 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+  m_PrefabInstance: {fileID: 102082350}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &102082352
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102082351}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.008583373, y: 0.026599992, z: 0.04958027}
+  m_Center: {x: -0.00039668742, y: 0.00093595474, z: 0.024745408}
 --- !u!1 &104154002
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,14 +1797,42 @@ MonoBehaviour:
   modello: {fileID: 171719814}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &171719816
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171719813}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0040000016, y: 0.005000002, z: 0.00000000138022}
+  m_Center: {x: -0.00000007438939, y: -0.000000007450581, z: -0.00000002142042}
 --- !u!1001 &175633962
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2282,14 +2395,42 @@ MonoBehaviour:
   modello: {fileID: 273437223}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &273437225
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273437222}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.004000004, y: 0.005000001, z: 9.089708e-10}
+  m_Center: {x: 0.000000044703484, y: -0.0000000018626451, z: 0.000000014901161}
 --- !u!4 &280349470 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2ce05773924ac974c91989b55a339a41, type: 3}
@@ -2739,14 +2880,42 @@ MonoBehaviour:
   modello: {fileID: 303283088}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &303283090
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303283087}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0040000016, y: 0.0050000018, z: 0.0000000014621764}
+  m_Center: {x: -0.000000022468157, y: -0.000000022351742, z: -0.000000039115548}
 --- !u!1001 &309480286
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4152,11 +4321,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -1880641913971719422, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.121
+      value: -1.123
       objectReference: {fileID: 0}
     - target: {fileID: -1880641913971719422, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.617
+      value: 2.622
       objectReference: {fileID: 0}
     - target: {fileID: -1880641913971719422, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4232,15 +4401,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 738628080311170817, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13.732
+      value: -13.702
       objectReference: {fileID: 0}
     - target: {fileID: 738628080311170817, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 18.167
+      value: 18.055
       objectReference: {fileID: 0}
     - target: {fileID: 738628080311170817, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 8.374
+      value: 8.309
       objectReference: {fileID: 0}
     - target: {fileID: 738628080311170817, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4376,15 +4545,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6485791466236756174, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.977
+      value: -5.978
       objectReference: {fileID: 0}
     - target: {fileID: 6485791466236756174, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.665
+      value: -2.675
       objectReference: {fileID: 0}
     - target: {fileID: 6485791466236756174, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.325
+      value: 2.321
       objectReference: {fileID: 0}
     - target: {fileID: 6485791466236756174, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4464,11 +4633,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8024802134278557522, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.091
+      value: 9.157
       objectReference: {fileID: 0}
     - target: {fileID: 8024802134278557522, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.589
+      value: 3.634
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4480,27 +4649,51 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -1708499241818477605, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1039639067}
+    - targetCorrespondingSourceObject: {fileID: -1708499241818477605, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1039639069}
     - targetCorrespondingSourceObject: {fileID: 6512748806976286358, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1508656708}
+    - targetCorrespondingSourceObject: {fileID: 6512748806976286358, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1508656709}
     - targetCorrespondingSourceObject: {fileID: 3141151553932405962, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2022937224}
+    - targetCorrespondingSourceObject: {fileID: 3141151553932405962, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2022937225}
     - targetCorrespondingSourceObject: {fileID: -7037431199905301205, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 171719815}
+    - targetCorrespondingSourceObject: {fileID: -7037431199905301205, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 171719816}
     - targetCorrespondingSourceObject: {fileID: 2136440407751884608, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 92024936}
+    - targetCorrespondingSourceObject: {fileID: 2136440407751884608, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 92024937}
     - targetCorrespondingSourceObject: {fileID: 2253004071596185622, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 87330117}
+    - targetCorrespondingSourceObject: {fileID: 2253004071596185622, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 87330118}
     - targetCorrespondingSourceObject: {fileID: 1340246174296032535, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 273437224}
+    - targetCorrespondingSourceObject: {fileID: 1340246174296032535, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 273437225}
     - targetCorrespondingSourceObject: {fileID: 3801810422765933084, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 303283089}
+    - targetCorrespondingSourceObject: {fileID: 3801810422765933084, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 303283090}
   m_SourcePrefab: {fileID: 100100000, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
 --- !u!4 &479760557 stripped
 Transform:
@@ -5805,7 +5998,7 @@ MonoBehaviour:
   distanzaInterazione: 2.5
   angoloVisuale: 50
   testoRicomponi: Premi E per ricomporre il mosaico
-  testoMancanti: Mancano {0} tasselli per completare questo quadro
+  testoMancanti: Mancano ancora dei tasselli
   tastoInteragisci: 101
 --- !u!4 &683845344 stripped
 Transform:
@@ -6594,6 +6787,32 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2079692775}
   m_SourcePrefab: {fileID: 100100000, guid: 2ce05773924ac974c91989b55a339a41, type: 3}
+--- !u!1 &782628375 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+  m_PrefabInstance: {fileID: 1622820186}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &782628379
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782628375}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.051988486, y: 0.019999998, z: 0.025407275}
+  m_Center: {x: 0, y: 8.7295196e-17, z: 0.012285705}
 --- !u!4 &783646169 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 58f6a31ac9061b84f9d54cf327c77307, type: 3}
@@ -7186,8 +7405,37 @@ PrefabInstance:
     - {fileID: 65702495048144492, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     - {fileID: -8700617353114198275, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 833282150}
   m_SourcePrefab: {fileID: 100100000, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+--- !u!1 &833282149 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+  m_PrefabInstance: {fileID: 833282148}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &833282150
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833282149}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.008583373, y: 0.026599992, z: 0.04958027}
+  m_Center: {x: -0.00039668742, y: 0.00093604415, z: 0.024745403}
 --- !u!1 &838393147
 GameObject:
   m_ObjectHideFlags: 0
@@ -8393,8 +8641,37 @@ PrefabInstance:
     - {fileID: 65702495048144492, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     - {fileID: -8700617353114198275, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 989428674}
   m_SourcePrefab: {fileID: 100100000, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+--- !u!1 &989428673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+  m_PrefabInstance: {fileID: 989428672}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &989428674
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989428673}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.008583373, y: 0.026599992, z: 0.04958027}
+  m_Center: {x: -0.00039670977, y: 0.00093604415, z: 0.024745353}
 --- !u!1001 &993294468
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9228,7 +9505,14 @@ MonoBehaviour:
   modello: {fileID: 0}
   ampiezzaOndeggio: 0.02
   velocitaOndeggio: 1.5
-  velocitaRotazione: 20
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 0}
+  modalitaSuono: 0
+  distanzaUdibile: 6
+  volumeSuono: 0.6
+  gruppoSFX: {fileID: 0}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
   distanzaRaccolta: 2
   angoloVisuale: 45
   testoSuggerimento: Premi E per raccogliere il tassello
@@ -9252,14 +9536,42 @@ MonoBehaviour:
   modello: {fileID: 1039639066}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &1039639069
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1039639065}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0040000034, y: 0.005000002, z: 8.77204e-10}
+  m_Center: {x: -0.00000005972106, y: 0.000000022351742, z: -0.000000011175871}
 --- !u!4 &1051086829 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
@@ -9627,8 +9939,37 @@ PrefabInstance:
     - {fileID: 65702495048144492, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     - {fileID: -8700617353114198275, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1090300652}
   m_SourcePrefab: {fileID: 100100000, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+--- !u!1 &1090300651 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+  m_PrefabInstance: {fileID: 1090300650}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1090300652
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090300651}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.008583373, y: 0.026599992, z: 0.04958027}
+  m_Center: {x: -0.00039670977, y: 0.00093601434, z: 0.024745354}
 --- !u!4 &1091677707 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6287519773868718309, guid: b13cccc8ba5592e42a53a68afba17c4b, type: 3}
@@ -12652,7 +12993,7 @@ MonoBehaviour:
   - "Ah, come dimenticarmi! Per arrivare in soffitta dovrai abbassarti abbastanza...
     sai... non c'erano molte norme edilizie al tempo... Comunque sia per farlo ti
     baster\xE0 tenere premuto il tasto C, facile no?"
-  - "Direi che ti ho gi\xE0 rintontito abbastanza, aiutami a completere queste faccende!"
+  - "Direi che ti ho gi\xE0 rintontito abbastanza, aiutami a completare queste faccende!"
   battuteSuccessive:
   - "Cerca bene, viandante. La basilica nasconde pi\xF9 di quanto mostri."
   battuteMosaico:
@@ -13984,14 +14325,42 @@ MonoBehaviour:
   modello: {fileID: 1508656707}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &1508656709
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508656706}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0040000016, y: 0.0050000027, z: 0.0000000013532117}
+  m_Center: {x: -0.00000006693881, y: 0.000000014901161, z: -0.00000001816079}
 --- !u!4 &1518471292 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 58f6a31ac9061b84f9d54cf327c77307, type: 3}
@@ -14185,7 +14554,7 @@ Transform:
   m_GameObject: {fileID: 1523675414}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.6971414, y: -1.29, z: -5.311}
+  m_LocalPosition: {x: 1.6971414, y: -1.096, z: -5.311}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15436,6 +15805,78 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.016580038, y: 0.021725392, z: 0.026922202}
   m_Center: {x: 0.0004740894, y: 0.010773884, z: -0.00025983254}
+--- !u!1001 &1622820186
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 39.4324
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 39.4324
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 39.4324
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.002
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071067
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      propertyPath: m_Name
+      value: Patibolo
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 782628379}
+  m_SourcePrefab: {fileID: 100100000, guid: 48d81b1b3f0bfee4db4aa10766f1146f, type: 3}
 --- !u!4 &1625154642 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 58f6a31ac9061b84f9d54cf327c77307, type: 3}
@@ -15830,8 +16271,37 @@ PrefabInstance:
     - {fileID: 65702495048144492, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     - {fileID: -8700617353114198275, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1648438856}
   m_SourcePrefab: {fileID: 100100000, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+--- !u!1 &1648438855 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+  m_PrefabInstance: {fileID: 1648438854}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1648438856
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1648438855}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.008583373, y: 0.026599992, z: 0.04958027}
+  m_Center: {x: -0.00039670977, y: 0.00093595474, z: 0.024745358}
 --- !u!1001 &1648803665
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16915,8 +17385,37 @@ PrefabInstance:
     - {fileID: 65702495048144492, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     - {fileID: -8700617353114198275, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1803241742}
   m_SourcePrefab: {fileID: 100100000, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+--- !u!1 &1803241741 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2503067242793516978, guid: 69b39c102cabc794495d7ac988b7ba9e, type: 3}
+  m_PrefabInstance: {fileID: 1803241740}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1803241742
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803241741}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.008583373, y: 0.026599992, z: 0.04958027}
+  m_Center: {x: -0.00039668742, y: 0.00093601434, z: 0.024745405}
 --- !u!1001 &1804396067
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18410,8 +18909,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc7aefc7e245dd944abd1e2f398c48a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMosaicoCompletato: 1
-  isGioco15Completato: 1
+  isMosaicoCompletato: 0
+  isGioco15Completato: 0
   tasselliTotali: 0
   tasselliRaccolti: []
   tasselliPosizionati: []
@@ -18488,14 +18987,42 @@ MonoBehaviour:
   modello: {fileID: 2022937223}
   ampiezzaOndeggio: 0
   velocitaOndeggio: 0
-  velocitaRotazione: 5
-  distanzaRaccolta: 2
-  angoloVisuale: 45
+  velocitaRotazione: 0
+  suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
+  modalitaSuono: 0
+  distanzaUdibile: 2.5
+  volumeSuono: 0.25
+  gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
+  richiamoDopoDialogoNPC: 1
+  durataComparsaSuono: 2
+  distanzaRaccolta: 1.5
+  angoloVisuale: 60
   testoSuggerimento: Premi E per raccogliere il tassello
   testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
   suonoRaccolta: {fileID: 8300000, guid: f82480c2ea849cd418edd34b3be5d0aa, type: 3}
   cameraGiocatore: {fileID: 963194227}
   tastoRaccogli: 101
+--- !u!65 &2022937225
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022937222}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0040000025, y: 0.005000001, z: 0.00000000115484}
+  m_Center: {x: -0.000000115600415, y: -0.000000037252903, z: 0.000000022351742}
 --- !u!4 &2024758878 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 6aa6b90a09ef6654d8c64d5d5f9df1dd, type: 3}
@@ -19372,3 +19899,4 @@ SceneRoots:
   - {fileID: 1002959384}
   - {fileID: 151078350}
   - {fileID: 1584745492}
+  - {fileID: 1622820186}

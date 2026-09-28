@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
 #endif
@@ -31,6 +32,23 @@ public class Tassello : MonoBehaviour
     [Tooltip("Rotazione lenta sul posto (gradi al secondo, 0 = ferma)")]
     [SerializeField] private float velocitaRotazione = 20f;
 
+    public enum ModalitaSuono { Continuo, Singolo }
+
+    [Header("Suono di richiamo (opzionale)")]
+    [Tooltip("Suono che aiuta a trovare il tassello: si sente solo da vicino e arriva dalla sua direzione")]
+    [SerializeField] private AudioClip suonoVicinanza;
+    [Tooltip("Continuo: suono in loop che cresce avvicinandosi. Singolo: un 'ding' quando si entra nel raggio")]
+    [SerializeField] private ModalitaSuono modalitaSuono = ModalitaSuono.Continuo;
+    [Tooltip("Distanza entro cui si sente il suono (metri)")]
+    [SerializeField] private float distanzaUdibile = 6f;
+    [SerializeField, Range(0f, 1f)] private float volumeSuono = 0.6f;
+    [Tooltip("Gruppo SFX dell'AudioMixer, così il suono segue gli slider del volume")]
+    [SerializeField] private AudioMixerGroup gruppoSFX;
+    [Tooltip("Se attivo, il richiamo inizia solo dopo la prima conversazione con l'NPC")]
+    [SerializeField] private bool richiamoDopoDialogoNPC = true;
+    [Tooltip("Secondi in cui il suono cresce quando il richiamo si attiva per la prima volta")]
+    [SerializeField] private float durataComparsaSuono = 2f;
+
     [Header("Raccolta")]
     [SerializeField] private float distanzaRaccolta = 2f;
     [Tooltip("Il giocatore deve guardare verso il tassello entro questo angolo (gradi)")]
@@ -53,6 +71,10 @@ public class Tassello : MonoBehaviour
     private Vector3 scalaModello;
     private float faseOndeggio;
     private bool raccolto = false;
+    private AudioSource sorgente;
+    private bool dentroRaggio = false; // Per la modalità Singolo
+    private bool suonoAvviato = false; // Il loop è già partito almeno una volta
+    private float volumeAttuale = 0f;  // Per far crescere il suono alla prima attivazione
 
     private void Awake()
     {
@@ -77,12 +99,117 @@ public class Tassello : MonoBehaviour
         {
             raccolto = true;
             gameObject.SetActive(false);
+            return;
         }
+
+        PreparaSuono();
+    }
+
+    // ---------- Suono di richiamo ----------
+
+    /// <summary>Crea una sorgente audio 3D sul tassello: si sente solo da vicino e dalla sua direzione.</summary>
+    private void PreparaSuono()
+    {
+        if (suonoVicinanza == null) return;
+
+        sorgente = gameObject.AddComponent<AudioSource>();
+        sorgente.clip = suonoVicinanza;
+        sorgente.outputAudioMixerGroup = gruppoSFX;
+        sorgente.playOnAwake = false;
+        sorgente.spatialBlend = 1f;                     // Completamente 3D
+        sorgente.rolloffMode = AudioRolloffMode.Linear; // Svanisce in modo regolare fino a zero
+        sorgente.minDistance = Mathf.Min(1f, distanzaUdibile * 0.2f);
+        sorgente.maxDistance = distanzaUdibile;
+        sorgente.dopplerLevel = 0f;
+        sorgente.volume = volumeSuono;
+
+        if (modalitaSuono == ModalitaSuono.Continuo)
+            sorgente.loop = true; // Parte in AggiornaSuono, quando il richiamo è attivo
+    }
+
+    /// <summary>True quando il giocatore ha già parlato con l'NPC (o se l'attesa è disattivata).</summary>
+    private bool RichiamoAttivo()
+    {
+        if (!richiamoDopoDialogoNPC) return true;
+        GameManager gm = GameManager.instance;
+        return gm == null || gm.obiettivoRivelato; // Senza GameManager (test) il richiamo è sempre attivo
+    }
+
+    private void AggiornaSuono()
+    {
+        if (sorgente == null) return;
+
+        // Prima del dialogo con l'NPC il richiamo non c'è ancora
+        if (!RichiamoAttivo()) return;
+
+        // In pausa, durante la cutscene, un minigioco o un dialogo il richiamo tace
+        bool silenzio = PauseMenu.IsPaused || IntroBasilica.InCorso || StazioneMinigioco.InUso || DialogoNPC.InCorso;
+
+        if (modalitaSuono == ModalitaSuono.Continuo)
+        {
+            if (silenzio)
+            {
+                if (sorgente.isPlaying) sorgente.Pause();
+                return;
+            }
+
+            if (!suonoAvviato)
+            {
+                // Prima attivazione: parte da un punto a caso del loop (i tasselli non suonano in sincrono)
+                suonoAvviato = true;
+                volumeAttuale = 0f;
+                sorgente.volume = 0f;
+                sorgente.time = Random.Range(0f, suonoVicinanza.length);
+                sorgente.Play();
+            }
+            else if (!sorgente.isPlaying)
+            {
+                sorgente.UnPause();
+            }
+
+            // Il suono cresce gradualmente fino al volume impostato
+            if (volumeAttuale < volumeSuono)
+            {
+                volumeAttuale = Mathf.MoveTowards(volumeAttuale, volumeSuono,
+                    volumeSuono * Time.deltaTime / Mathf.Max(durataComparsaSuono, 0.01f));
+                sorgente.volume = volumeAttuale;
+            }
+            return;
+        }
+
+        // Modalità Singolo: un "ding" quando il giocatore entra nel raggio
+        if (giocatore == null || silenzio) return;
+        float distanza = Vector3.Distance(giocatore.position, modello.position);
+
+        if (!dentroRaggio && distanza <= distanzaUdibile)
+        {
+            dentroRaggio = true;
+            sorgente.PlayOneShot(suonoVicinanza, volumeSuono);
+        }
+        else if (dentroRaggio && distanza > distanzaUdibile * 1.2f)
+        {
+            dentroRaggio = false; // Uscito dal raggio: al prossimo ingresso suonerà di nuovo
+        }
+    }
+
+    private IEnumerator SfumaSuono(float durata)
+    {
+        if (sorgente == null) yield break;
+        float iniziale = sorgente.volume, t = 0f;
+        while (t < durata)
+        {
+            t += Time.deltaTime;
+            sorgente.volume = Mathf.Lerp(iniziale, 0f, t / durata);
+            yield return null;
+        }
+        sorgente.Stop();
     }
 
     private void Update()
     {
         if (raccolto) return;
+
+        AggiornaSuono();
 
         // Ondeggia e ruota lentamente per farsi notare
         faseOndeggio += Time.deltaTime * velocitaOndeggio;
@@ -108,6 +235,7 @@ public class Tassello : MonoBehaviour
     {
         raccolto = true;
         MessaggiSchermo.NascondiSuggerimento(this);
+        StartCoroutine(SfumaSuono(0.4f)); // Il richiamo sfuma mentre il tassello vola via
 
         GameManager gm = GameManager.instance;
         if (gm != null) gm.RaccogliTassello(Id);

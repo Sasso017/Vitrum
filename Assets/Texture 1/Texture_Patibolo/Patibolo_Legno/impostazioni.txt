@@ -1,0 +1,3 @@
+triplanare=0.65
+metallic=0
+smoothness=0.15
