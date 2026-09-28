@@ -777,8 +777,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
@@ -877,8 +877,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
@@ -1800,8 +1800,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
@@ -2398,8 +2398,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
@@ -2883,8 +2883,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
@@ -4646,9 +4646,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -1708499241818477605, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1039639068}
-    - targetCorrespondingSourceObject: {fileID: -1708499241818477605, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1039639067}
     - targetCorrespondingSourceObject: {fileID: -1708499241818477605, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1039639069}
@@ -9489,37 +9486,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 564720095329201351, guid: 3c1968a097df43241a9402ceaddf20bd, type: 3}
   m_PrefabInstance: {fileID: 460919285}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1039639067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1039639065}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ebc4bfd8452e2043a8a5763d20a9072, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  idTassello: 
-  modello: {fileID: 0}
-  ampiezzaOndeggio: 0.02
-  velocitaOndeggio: 1.5
-  velocitaRotazione: 0
-  suonoVicinanza: {fileID: 0}
-  modalitaSuono: 0
-  distanzaUdibile: 6
-  volumeSuono: 0.6
-  gruppoSFX: {fileID: 0}
-  richiamoDopoDialogoNPC: 1
-  durataComparsaSuono: 2
-  distanzaRaccolta: 2
-  angoloVisuale: 45
-  testoSuggerimento: Premi E per raccogliere il tassello
-  testoRaccolta: Tassello del mosaico trovato! ({0}/{1})
-  suonoRaccolta: {fileID: 0}
-  cameraGiocatore: {fileID: 0}
-  tastoRaccogli: 101
 --- !u!114 &1039639068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9539,8 +9505,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
@@ -14328,8 +14294,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
@@ -18990,8 +18956,8 @@ MonoBehaviour:
   velocitaRotazione: 0
   suonoVicinanza: {fileID: 8300000, guid: 73654cf187144344887786b256d91092, type: 3}
   modalitaSuono: 0
-  distanzaUdibile: 2.5
-  volumeSuono: 0.25
+  distanzaUdibile: 3.5
+  volumeSuono: 0.3
   gruppoSFX: {fileID: 2180180522369747648, guid: 63a316c9fa5714e4a92ddfcd7ae7e7f8, type: 2}
   richiamoDopoDialogoNPC: 1
   durataComparsaSuono: 2
